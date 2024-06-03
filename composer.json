@@ -1,0 +1,16 @@
+{
+    "name" : "juan-carlos/tourcms-php",
+    "description" : "Prueba técnica para TourCMS",
+    "require": {
+        "tourcms/tourcms-php": "^4.7",
+        "predis/predis": "1.*.*",
+        "mustache/mustache": "^2.14"
+    },
+    "autoload": {
+        "psr-4": {
+            "onboarding\\services\\": "controllers"
+        }
+    }
+
+
+}
