@@ -11,42 +11,56 @@ use PhpParser\Node\Expr\Cast;
 use onboarding\services\RedisService;
 use PhpParser\Node\Expr\Print_;
 
-$re = new RedisService($REDIS_HOST, $REDIS_PORT, $REDIS_PASSWORD);
-$marketplaceIdForOperator = 0;
+
+$redis = new RedisService($REDIS_HOST, $REDIS_PORT, $REDIS_PASSWORD);
+$tourcms = new TourCMS($MARKETPLACE_ID, $AGENT_API_KEY, 'simplexml', $TIMEOUT);
+$tourcms->set_base_url($BASE_URL);
+$expirationTime = time() + 600;
 // $apiKey = "6f24ac3ac4ed";
 // $marketplaceId = 33495;
 // $apiKey = "52fc7e3d2ef7";
-$marketplaceId = 12345;
-$agentApiKey = "ccadca970eea";
-$timeout = 0;
 // $channelId = 142;
 // $params = '';
-$baseUrl = 'http://api.tourcms.local';
 // $cacheName = 'channelList';
-$expirationTime = time() + 600;
-$tourcms = new TourCMS($marketplaceId, $agentApiKey, 'simplexml', $timeout);
-$tourcms->set_base_url($baseUrl);
 
 
-$reserSys = new ReservationSystem($tourcms, $re, $expirationTime);
+$reserSys = new ReservationSystem($tourcms, $redis, $expirationTime);
 $templates = new Templates();
 $page = $templates->getPageUrl();
 $data = $templates->getData($page);
 
-if($page == 'home'){
-    $channels = new ArrayIterator($reserSys->listChannels());
-    $data['content']['channels'] = $channels; 
+if($page == 'formCustomers'){
+    $data['content']['formCustomers']['channel_id'] = $_POST['postChannelId'];
+    $data['content']['formCustomers']['tour_id'] = $_POST['postTourId'];
+    $data['content']['formCustomers']['component_key'] = $_POST['postComponentKey'];
+
 }
-if($page == 'tours'){
+
+elseif($page == 'singleTour'){    
+    $channels = new ArrayIterator($reserSys->listChannels());
+    $data['content']['channels'] = $channels;
+    if(isset($_POST['postTourId'])){
+        $data['content']['singleTour'] = $reserSys->getTourDetails($_POST['postChannelId'], $_POST['postTourId']);
+        $data['content']['ratesAuxiliary'] = $reserSys->getRateFromSingleTour($reserSys->getTourDetails($_POST['postChannelId'], $_POST['postTourId']));
+    }
+    if(isset($_POST['postCheckAvailability'])){
+        $data['content']['availability'] = $reserSys->checkTourAvailability($_POST['postChannelId'], $_POST['postTourId'], $_POST['postQuery']);
+        $data['content']['availability']['totalAmountOfCustomers'] =$reserSys->getTotalAmountOfCustomers($_POST['postQuery']);
+        // error_log(print_r($data['content']['availability'], true));
+    }
+}
+elseif($page == 'tours'){
     $channels = new ArrayIterator($reserSys->listChannels());
     $data['content']['channels'] = $channels;
     if(isset($_POST['postChannelId'])){
         $reserSys->listTours($_POST['postChannelId']);
-        // $data['content']['tours_'.$_POST['postChannelId']] = new ArrayIterator($reserSys->listTours($_POST['postChannelId']));
-        // error_log(print_r($data, true));
+        $data['content']['tours'] = new ArrayIterator($reserSys->listTours($_POST['postChannelId']));
     }
-
-    // $data['content']['tours'] = new ArrayIterator($reserSys->listTours($channelId, $params));
+}
+elseif($page == 'channels'){
+    $channels = new ArrayIterator($reserSys->listChannels());
+    $data['content']['channels'] = $channels; 
+    error_log(print_r($data, true));
 }
 
 try {
