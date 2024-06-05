@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1, maximum-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+    <title>{{content.title}}</title>
+</head>
+</head>
+
+<body>
+    {{> header}}
+    <div id="content" class="container">
+        <main>
+            {{# content }}
+            <h3>Check Availability</h3>
+            <form action="singleTour" method="POST">
+                {{# ratesAuxiliary }}
+                <div class="col-md-6">
+                    <label for="rate_{{ rate_id }}" class="form-label mb-1">{{# label_1 }} {{label_1}} {{/ label_1 }} {{^ label_1 }} Number of people {{/ label_1 }} 
+                        {{# label_2 }} ({{label_2}}) {{/ label_2 }} {{^ label_2 }}  {{/ label_2 }} 
+                    </label>
+                    <input class="form-control mb-2" id="rate_{{ rate_id }}" type="text" name=postQuery[{{rate_id}}] placeholder="Insert number" aria-label="default input example" required>
+                </div>
+                {{/ ratesAuxiliary}}
+                <div class="col-md-6">
+                    <label class="form-label mb-1" for="datePicked">Select a date</label>
+                    <input type="date" id="datePicked" name="postQuery[date]" class="form-control mb-2" required>
+                </div>
+                <input type="hidden" name="postTourId" value="{{ singleTour.tour.tour_id }}">
+                <input type="hidden" name="postChannelId" value="{{ singleTour.tour.channel_id }}">
+                <input type="hidden" name="postCheckAvailability">
+                    <button type="submit" class="btn btn-primary">Check</button>
+            </form>
+
+            {{# availability.available_components }}
+                <div class="container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Departure</th>
+                                    <th scope="col">Final price</th>
+                                    <th scope="col">Price Breakdown</th>
+                                    <th scope="col"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {{# component}}
+                                <form action="formCustomers" method="POST" id="goToCustomerForm_{{component_key}}">
+                                    <input type="text" name="postChannelId" value="{{availability.channel_id}}">
+                                    <input type="text" name="postTourId" value="{{availability.tour_id}}">
+                                    <input type="text" name="postComponentKey" value="{{component_key}}">
+                                    <input type="text" name="postTotalAmountCustomers" value="{{availability.totalAmountOfCustomers}}">
+                                </form> 
+                                <tr>
+                                    <td>
+                                       <p>{{ availability.tour_name }}</p>
+                                    </td>
+                                    <td>
+                                       <p>{{total_price}}{{sale_currency}}</p>
+                                    </td>
+                                    <td>
+                                        {{# price_breakdown.price_row}}
+                                        <p>{{.}}</p>
+                                        {{/ price_breakdown.price_row}}
+                                    </td>
+                                    <td>         
+                                        <button type="submit" class="btn btn-primary mb-1" form="goToCustomerForm_{{component_key}}">Select</button>
+                                    </td>
+                                </tr>
+                                {{/ component}}
+                            </tbody>
+                        </table>
+                </div>
+
+            {{/ availability.available_components }}
+
+            {{^ availability.available_components }}
+            <div class="alert alert-warning mt-5" role="alert">
+                No availability for the selected criteria
+            </div>
+            {{/ availability.available_components }}
+            {{/ content }}
+        </main>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+    {{> footer}}
+</body>
+
+
+</html>

@@ -34,7 +34,7 @@ class Templates
         $url = explode('?', $_SERVER['REQUEST_URI']);
         $url = explode('/', $url[0]);
         $page = $url[count($url) - 1];
-        return ($page == 'index.php') ? 'home' : $page;
+        return ($page == 'index.php') ? 'channels' : $page;
     }
 
     private function getIndex()
@@ -59,7 +59,7 @@ class Templates
         $data['nav']['header'] = $this->nav->header($url);
         $data['nav']['footer'] = $this->nav->footer($url);
         switch ($page) {
-            case 'home':
+            case 'channels':
                 $data['content'] = [
                     'title' => 'List of Channels',
                 ];
@@ -69,6 +69,20 @@ class Templates
                     'title' => 'Select a Tour',
                     'heading' => 'Select a Tour',
                     'body' => 'This is the tours page'
+                ];
+                break;
+            case 'singleTour':
+                $data['content'] = [
+                    'title' => 'Tour Details',
+                    'heading' => 'Tour Details',
+                    'body' => 'This is the single tour page'
+                ];
+                break;
+            case 'formCustomers':
+                $data['content'] = [
+                    'title' => 'Customer Form',
+                    'heading' => 'Customer Form',
+                    'body' => 'This is the customer form page'
                 ];
                 break;
             case 'about':

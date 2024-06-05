@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-<html>
 
 <head>
     <meta charset="UTF-8">
@@ -15,49 +14,55 @@
 
 <body>
     {{> header}}
-    <div id="content" class="container">
-        <main>
+    <main>
+        <div id="content" class="container text-center">
             {{# content }}
             <form action="tours" method="POST" id="selectChannel">
-                <select class="form-select form-select-lg mb-3" aria-label="Large select example" form="selectChannel" name="postChannelId">
+                <select class="form-select form-select-lg mb-3" aria-label="Large select example" form="selectChannel"
+                    name="postChannelId">
                     {{# channels }}
-                    <option value="{{ channel_id }}" id="postChannelId_{{channel_id}}">{{ channel_name }}</option>
+                    <option value="{{ channel_id }}" id="postChannelId_{{channel_id}}">{{ channel_name
+                        }}</option>
                     {{/ channels }}
                 </select>
-                <input type="hidden" id="postChannelId2" name="postChannelId2" value= 'hola'/>
                 <button type="submit" class="btn btn-primary">Submit</button>
             </form>
 
             <div class="container text-center">
-                <!-- ................................ -->
-                {{# tours }}
-                <div class="card" style="width: 18rem;">
-                    <img src={{ channel_logo }} class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <h5 class="card-title">Name: {{ channel_name }} </h5>
-                        <p class="card-text">Channel Id: {{ channel_id }}</p>
-                        <p class="card-text">Description {{ channel_desc }}</p>
-                        <form action="tours" method="post">
-                            <input type="hidden" name="channel_id" value="{{ channel_id }}">
-                            <input type="submit" value="Ver tours" class="btn btn-primary" formaction="tours">
-                        </form>
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4">
+
+                    {{# tours }}
+                    <div class="card mt-3" style="width: 18rem;">
+                        <div class="card-body">
+                            <h5 class="card-title">Name: {{ tour_name }}
+                            </h5>
+                            <p class="card-text">Tour Id: {{ tour_id }}</p>
+                            <p class="card-text">Tour Code: {{ tour_code}}</p>
+                            <p class="card-text">Channel Id: {{ channel_id}}</p>
+                            <form action="singleTour" method="post">
+                                <input type="hidden" name="postChannelId" value="{{ channel_id }}">
+                                <input type="hidden" name="postTourId" value="{{ tour_id }}">
+                                <button type="submit" value="postViewTour" class="btn btn-primary">
+                                    View Tour</button>
+                            </form>
+                        </div>
                     </div>
+                    {{/ tours }}
                 </div>
-                {{/ tours }}
-                <!-- ---------------------------------- -->
-                {{^ tours }}
-                <h1 class="display-3">Select a Channel firstly</h1>
-                {{/ tours }}
             </div>
 
-        </main>
-        {{/ content }}
-    </div>
+            {{^ tours }}
+            <h1 class="display-3 mt-3">Select a Channel firstly</h1>
+            {{/ tours }}
+
+
+            {{/ content }}
+        </div>
+    </main>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
     {{> footer}}
 </body>
-
 
 </html>
