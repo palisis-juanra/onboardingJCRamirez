@@ -85,6 +85,13 @@ class Templates
                     'body' => 'This is the customer form page'
                 ];
                 break;
+            case 'bookingDetails':
+                $data['content'] = [
+                    'title' => 'Booking Details',
+                    'heading' => 'Booking Details',
+                    'body' => 'This is the booking details page'
+                ];
+                break;
             case 'about':
                 $data['content'] = [
                     'title' => 'About',

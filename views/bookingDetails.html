@@ -1,0 +1,67 @@
+{{>head}}
+<body>
+    {{>header}}
+    <main>
+        <div class="container text-center">
+            <form id="bookingDetailsForm" class="text-center container" method="POST" action="bookingDetails">
+                <div class="form-row d-flex">
+                    <div class="mb-1 form-group ">
+                        <label for="booking_date" class="form-label">Booking Date
+                            <input type="date" class="form-control" name="postBookingDate">
+                        </label>
+                    </div>
+                    <div class="mb-1 form-group ">
+                        <label for="booking_time" class="form-label
+                            ">Booking Time
+                            <input type="time" class="form-control" name="postBookingTime">
+                        </label>
+                    </div>
+                </div>
+                <div class="form-row d-flex">
+                    <div class="mb-1 form-group ">
+                        <label for="booking_reference" class="form-label">Booking Reference
+                            <input type="text" class="form-control" name="postBookingReference">
+                        </label>
+                    </div>
+                    <div class="mb-1 form-group ">
+                        <label for="booking_price" class="form-label
+                            ">Booking Price
+                            <input type="number" class="form-control" name="postBookingPrice">
+                        </label>
+                    </div>
+                </div>
+                <div class="form-row d-flex">
+                    <div class="mb-1 form-group ">
+                        <label for="booking_currency" class="form-label">Booking Currency
+                            <input type="text" class="form-control" name="postBookingCurrency">
+                        </label>
+                    </div>
+                    <div class="mb-1 form-group ">
+                        <label for="booking_status" class="form-label
+                            ">Booking Status
+                            <input type="text" class="form-control" name="postBookingStatus">
+                        </label>
+                    </div>
+                </div>
+                <div class="form-row d-flex">
+                    <div class="mb-1 form-group ">
+                        <label for="booking_notes" class="form-label
+
+                            ">Booking Notes
+                            <input type="text" class="form-control" name="postBookingNotes">
+                        </label>
+                        
+                    </div>
+                </div>
+                <input type="hidden" name="postTourId" value="{{ tour_id }}">
+                <input type="hidden" name="postChannelId" value="{{ channel_id }}">
+                <input type="hidden" name="postComponentKey" value="{{ component_key }}">
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+
+        </div>
+    </main>
+    {{>footer}}
+    {{>scripts}}
+</body>
+</html
