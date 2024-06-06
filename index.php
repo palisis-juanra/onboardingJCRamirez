@@ -5,6 +5,7 @@ include_once 'config.php';
 
 
 Mustache_Autoloader::register();
+
 use TourCMS\Utils\TourCMS as TourCMS;
 use function PHPSTORM_META\type;
 use PhpParser\Node\Expr\Cast;
@@ -29,37 +30,55 @@ $templates = new Templates();
 $page = $templates->getPageUrl();
 $data = $templates->getData($page);
 
-if($page == 'formCustomers'){
-    $data['content']['formCustomers']['channel_id'] = $_POST['postChannelId'];
-    $data['content']['formCustomers']['tour_id'] = $_POST['postTourId'];
-    $data['content']['formCustomers']['component_key'] = $_POST['postComponentKey'];
 
-}
 
-elseif($page == 'singleTour'){    
+if ($page == 'bookingDetails') {
+    
+
+} elseif ($page == 'formCustomers') {
+    if(isset($_POST['postCommitBooking'])){
+        $booking = $reserSys->commitBooking($_POST['postChannelId'], $_POST['postRequestedBooking'], $_POST['postRequestBookingAs']);
+        $data['content']['bookingDone'] = true;
+    } elseif (isset($_POST['postRequesBooking'])) {
+        $booking = $reserSys->createTemporalBooking($_POST['postChannelId'], $_POST['postComponentKey'], $_POST['postCustomersArray'], $_POST['postRequestBookingAs']);
+        $data['content']['resquestedBooking']['channel_id'] = $_POST['postChannelId'];
+        $data['content']['resquestedBooking']['requestBookingAs'] = $_POST['postRequestBookingAs'];
+        $data['content']['resquestedBooking']['resquestedBookingResponse'] = $booking;
+
+    } else {
+        $data['content']['formCustomers']['channel_id'] = $_POST['postChannelId'];
+        $data['content']['formCustomers']['tour_id'] = $_POST['postTourId'];
+        $data['content']['formCustomers']['component_key'] = $_POST['postComponentKey'];
+        $data['content']['formCustomers']['totalAmountCustomers'] = $_POST['postTotalAmountCustomers'];
+        for ($i = 1; $i <= $_POST['postTotalAmountCustomers']; $i++) {
+            $data['content']['formCustomers']['customers'][] = $i;
+        }
+        $data['content']['formCustomers']['requestBookingAs'] = $_POST['postBookingAs'];
+        error_log(print_r($data, true));
+    }
+} elseif ($page == 'singleTour') {
     $channels = new ArrayIterator($reserSys->listChannels());
     $data['content']['channels'] = $channels;
-    if(isset($_POST['postTourId'])){
+    if (isset($_POST['postTourId'])) {
         $data['content']['singleTour'] = $reserSys->getTourDetails($_POST['postChannelId'], $_POST['postTourId']);
         $data['content']['ratesAuxiliary'] = $reserSys->getRateFromSingleTour($reserSys->getTourDetails($_POST['postChannelId'], $_POST['postTourId']));
     }
-    if(isset($_POST['postCheckAvailability'])){
+    if (isset($_POST['postCheckAvailability'])) {
         $data['content']['availability'] = $reserSys->checkTourAvailability($_POST['postChannelId'], $_POST['postTourId'], $_POST['postQuery']);
-        $data['content']['availability']['totalAmountOfCustomers'] =$reserSys->getTotalAmountOfCustomers($_POST['postQuery']);
+        $data['content']['availability']['totalAmountOfCustomers'] = $reserSys->getTotalAmountOfCustomers($_POST['postQuery']);
+        $data['content']['availability']['bookingAs'] = $_POST['postBookingAs'];
         // error_log(print_r($data['content']['availability'], true));
     }
-}
-elseif($page == 'tours'){
+} elseif ($page == 'tours') {
     $channels = new ArrayIterator($reserSys->listChannels());
     $data['content']['channels'] = $channels;
-    if(isset($_POST['postChannelId'])){
+    if (isset($_POST['postChannelId'])) {
         $reserSys->listTours($_POST['postChannelId']);
         $data['content']['tours'] = new ArrayIterator($reserSys->listTours($_POST['postChannelId']));
     }
-}
-elseif($page == 'channels'){
+} elseif ($page == 'channels') {
     $channels = new ArrayIterator($reserSys->listChannels());
-    $data['content']['channels'] = $channels; 
+    $data['content']['channels'] = $channels;
     error_log(print_r($data, true));
 }
 
