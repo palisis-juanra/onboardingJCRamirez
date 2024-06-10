@@ -1,0 +1,17 @@
+<?php
+$host = "";
+$redisHost = "";
+
+
+
+
+
+$REDIS_HOST=$redisHost;
+$REDIS_PORT=;
+$REDIS_PASSWORD="";
+
+$MARKETPLACE_ID = ;
+$AGENT_API_KEY = "";
+$TIMEOUT = ;
+$BASE_URL = '';
+$MARKETPLACE_ID_FOR_OPERATOR = ;
