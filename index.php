@@ -34,7 +34,6 @@ if ($page == 'bookingDetails') {
 } elseif ($page == 'formCustomers') {
     if(isset($_POST['postCommitBooking'])){
         $booking = $reserSys->commitBooking($_POST['postChannelId'], $_POST['postRequestedBooking'], $_POST['postRequestBookingAs']);
-        error_log(print_r($booking, true));
         $data['content']['bookingDone'] = true;
         $data['content']['bookingChannel'] = $booking->channel_id;
         $data['content']['bookingId'] = $booking->booking_id;
@@ -54,7 +53,6 @@ if ($page == 'bookingDetails') {
             $data['content']['formCustomers']['customers'][] = $i;
         }
         $data['content']['formCustomers']['requestBookingAs'] = $_POST['postBookingAs'];
-        error_log(print_r($data, true));
     }
 } elseif ($page == 'singleTour') {
     $channels = new ArrayIterator($reserSys->listChannels());
