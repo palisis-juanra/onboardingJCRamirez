@@ -27,8 +27,14 @@ $data = $templates->getData($page);
 
 
 if ($page == 'bookingDetails') {
-    if(isset($_POST['postSearchBooking'])){
-        $data['content']['bookingDetails'] = $reserSys->showBooking($_POST['postChannelId'], $_POST['postBookingId']);
+    if(isset($_POST['postUpdateCancelation'])){
+        $cancelation = $reserSys->cancelBooking($_POST['postChannelId'], $_POST['postBookingId']);
+        $data['content']['bookingDetails'] = $reserSys->forceShowBookingUpdate($_POST['postChannelId'], $_POST['postBookingId']);
+        }
+        elseif(isset($_POST['postSearchBooking'])){
+            $data['content']['bookingDetails'] = $reserSys->showBooking($_POST['postChannelId'], $_POST['postBookingId']);
+            $data['content']['customersFromBooking'] = formatCustomers($data['content']['bookingDetails']);
+            error_log(print_r($data['content'], true));
     }
 
 } elseif ($page == 'formCustomers') {
@@ -82,4 +88,26 @@ try {
     echo $templates->render($page, $data);
 } catch (Mustache_Exception_UnknownTemplateException $e) {
     echo $templates->render('404', $data);
+}
+
+
+function formatCustomers($bookingInfo)
+{
+    $aux_array = ['customer_id', 'firstname', 'middlename', 'surname', 'customer_email', 'customer_tel_home', 'nationality_text'];
+    $customers = [];
+    if(isset($bookingInfo['customers']['customer']['customer_id'])){
+        foreach ($aux_array as $key) {
+            $customers[0][$key] = $bookingInfo['customers']['customer'][$key];
+        }
+    }
+    else{
+        foreach ($bookingInfo['customers']['customer'] as $customerFromBooking) {
+            $customerAux = [];
+            foreach ($aux_array as $key) {
+                $customerAux[$key] = $customerFromBooking[$key];
+            }
+            $customers[] = $customerAux;
+        }
+    }
+    return $customers;
 }
