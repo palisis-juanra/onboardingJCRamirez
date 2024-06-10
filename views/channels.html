@@ -9,14 +9,21 @@
                 <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4">
                     <!-- ................................ -->
                     {{# channels }}
-                    <div class="card" style="width: 18rem;">
-                        <img src='{{ channel_logo }}' class="card-img-top" alt="...">
-                        <div class="card-body">
-                            <h5 class="card-title">Name: {{ channel_name }} </h5>
-                            <p class="card-text">Id: {{ channel_id }}</p>
-                            <p class="card-text">Description {{ channel_desc }}</p>
-                        </div>
+                    
+                    <div class="card-custom">
+                            <img src="{{# channel_logo }} {{channel_logo }} {{/ channel_logo }} {{^ channel_logo }}https://via.placeholder.com/100 {{/ channel_logo }}" class="" alt="Image">
+                            <div class="ccard-body">
+                                <h5 class="card-title">Name: {{ channel_name }}</h5>
+                                <p class="card-text">Id: {{ channel_id }}</p>
+                                <p class="card-text">Description: {{ channel_desc }}</p>
+                            </div>
+                            <form action="index.php/bookingDetails" method="POST" id='formBooking_{{ channel_id }}'>
+                                <input type="hidden" name="postSearchBooking">
+                                <input type="hidden" name="postChannelId" value="{{ channel_id }}">
+                                <input type="text" class="form-control" name="postBookingId" placeholder="Booking: E.g. 4532">
+                            </form>
                     </div>
+
                     {{/ channels }}
                     <!-- ---------------------------------- -->
                 </div>

@@ -2,64 +2,96 @@
 <body>
     {{>header}}
     <main>
-        <div class="container text-center">
-            <form id="bookingDetailsForm" class="text-center container" method="POST" action="bookingDetails">
-                <div class="form-row d-flex">
-                    <div class="mb-1 form-group ">
-                        <label for="booking_date" class="form-label">Booking Date
-                            <input type="date" class="form-control" name="postBookingDate">
-                        </label>
+        {{#content.bookingDetails}}
+        <article id="bookingInfo">
+            <div class="container mt-4">
+                <div class="row">
+                    <div class=" mb-2">
+                        <h3>Edit Booking {{booking.booking_id}}</h3>
+                        <h4>{{ booking.booking_name }}</h1>
+                        <a href="{{booking.voucher_url}}" target="_blank">Printo Voucher</a>
                     </div>
-                    <div class="mb-1 form-group ">
-                        <label for="booking_time" class="form-label
-                            ">Booking Time
-                            <input type="time" class="form-control" name="postBookingTime">
-                        </label>
+                    <!-- Lead customer card -->
+                    <div class="col-md-3">
+                        <div class="card card-custom card-dark text-center p-3">
+                            <h5 class="card-title"><i class="icon fas fa-user"></i> Lead Customer</h5>
+                            <p>Name: {{# booking.lead_customer_name }} {{ booking.lead_customer_name }} {{/ booking.lead_customer_name }}{{^ booking.lead_customer_name }} Undefined {{/ booking.lead_customer_name }}</p>
+                            <p>Tel: {{# booking.lead_customer_tel_home }} {{ booking.lead_customer_tel_home }}{{/ booking.lead_customer_tel_home }}{{^ booking.lead_customer_tel_home }} Undefined{{/ booking.lead_customer_tel_home }}</p>
+                            <p>Nationality: {{# booking.nationality }}{{ booking.nationality_text }}{{/ booking.nationality }}{{^ booking.nationality }} Undefined {{/ booking.nationality }}</p>
+                            <p>Email: {{# booking.lead_customer_email }}{{ booking.lead_customer_email }}{{/ booking.lead_customer_email }}{{^ booking.lead_customer_email }}Undefined{{/ booking.lead_customer_email }}</p>
+                            <a href="#" class="btn btn-light mt-3">Make lead customer non travelling</a>
+                        </div>
+                    </div>
+                    <!-- No travel agent card -->
+                    <div class="col-md-3">
+                        <div class="card card-custom text-center p-3">
+                            <h5 class="card-title"><i class="icon fas fa-plane-slash"></i> {{booking.agent_name}}</h5>
+                            <p>Date: {{ booking.start_date }}</p>
+                            <p>Customers: {{ booking.customer_count }}</p>
+                            <p>Made on: {{ booking.made_date_time }}</p>
+                            <p>Booking by: {{ booking.made_name }}</p>
+                            <p>Departure: {{ booking.start_date }}</p>
+                        </div>
+                    </div>
+                    <!-- Transaction card -->
+                    <div class="col-md-3">
+                        <div class="card card-custom card-orange text-center p-3">
+                            <h5 class="card-title"><i class="icon fas fa-receipt"></i> Transaction</h5>
+                            <p>Sale value: {{ booking.sales_revenue_display }}</p>
+                            <p>Balance: {{ booking.balance_display }} ({{ booking.balance_due }})</p>
+                            <p>Owed by: {{# booking.balance_owed_by }}Lead customer{{/ booking.balance_owed_by }}{{^ booking.balance_owed_by }}Undefined{{/ booking.balance_owed_by }}</p>
+                            <a href="#" class="btn btn-light mt-3">Add Payment / Refund</a>
+                        </div>
+                    </div>
+                    <!-- Confirmed card -->
+                    <div class="col-md-3">
+                        <div class="card card-custom text-center p-3">
+                            <h5 class="card-title"><i class="icon fas fa-check-circle text-success"></i> {{ booking.status_text }}</h5>
+                            <p>{{ booking.made_date_time }}</p>
+                            <div class="form-group">
+                                <select class="form-control">
+                                    <option>{{ booking.cancel_text }}</option>
+                                    <option>Cancelled</option>
+                                </select>
+                            </div>
+                            <button class="btn btn-primary mt-3">Update status</button>
+                        </div>
                     </div>
                 </div>
-                <div class="form-row d-flex">
-                    <div class="mb-1 form-group ">
-                        <label for="booking_reference" class="form-label">Booking Reference
-                            <input type="text" class="form-control" name="postBookingReference">
-                        </label>
-                    </div>
-                    <div class="mb-1 form-group ">
-                        <label for="booking_price" class="form-label
-                            ">Booking Price
-                            <input type="number" class="form-control" name="postBookingPrice">
-                        </label>
-                    </div>
-                </div>
-                <div class="form-row d-flex">
-                    <div class="mb-1 form-group ">
-                        <label for="booking_currency" class="form-label">Booking Currency
-                            <input type="text" class="form-control" name="postBookingCurrency">
-                        </label>
-                    </div>
-                    <div class="mb-1 form-group ">
-                        <label for="booking_status" class="form-label
-                            ">Booking Status
-                            <input type="text" class="form-control" name="postBookingStatus">
-                        </label>
-                    </div>
-                </div>
-                <div class="form-row d-flex">
-                    <div class="mb-1 form-group ">
-                        <label for="booking_notes" class="form-label
+            </div>
+        </article>
+        <!-- <article id="CustomersInfo">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Title</th>
+                        <th>First Name</th>
+                        <th>Middle Name</th>
+                        <th>Surname</th>
+                        <th>Nationality</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#customers}}
+                    <tr>
+                        <td>{{customer_id}}</td>
+                        <td>{{title}}</td>
+                        <td>{{firstname}}</td>
+                        <td>{{middlename}}</td>
+                        <td>{{surname}}</td>
+                        <td>{{nationality}}</td>
+                        <td>{{email}}</td>
+                        <td>{{phone}}</td>
+                    </tr>
+                    {{/customers}}
+                </tbody>
+            </table>
+        </article> -->
 
-                            ">Booking Notes
-                            <input type="text" class="form-control" name="postBookingNotes">
-                        </label>
-                        
-                    </div>
-                </div>
-                <input type="hidden" name="postTourId" value="{{ tour_id }}">
-                <input type="hidden" name="postChannelId" value="{{ channel_id }}">
-                <input type="hidden" name="postComponentKey" value="{{ component_key }}">
-                <button type="submit" class="btn btn-primary">Submit</button>
-            </form>
-
-        </div>
+        {{/content.bookingDetails}}
     </main>
     {{>footer}}
     {{>scripts}}

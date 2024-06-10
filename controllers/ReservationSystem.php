@@ -1,10 +1,10 @@
 <?php
 
 use TourCMS\Utils\TourCMS as TourCMS;
-use function PHPSTORM_META\type;
-use PhpParser\Node\Expr\Cast;
 use onboarding\services\RedisService;
-use PhpParser\Node\Expr\Print_;
+//use function PHPSTORM_META\type;
+//use PhpParser\Node\Expr\Cast;
+//use PhpParser\Node\Expr\Print_;
 
 class ReservationSystem
 {
@@ -17,7 +17,7 @@ class ReservationSystem
     private $redisService;
     private $expirationTime;
 
-    public function __construct(TourCMS $TourCMSAgent, RedisService $redisService, $expirationTime)
+    public function __construct(TourCMSextension $TourCMSAgent, RedisService $redisService, $expirationTime)
     {
         self::$cacheName = 'cacheName';
         self::$marketPlaceIdForOperator = 0;
@@ -30,7 +30,6 @@ class ReservationSystem
 
 
 
-    // Método para listar canales
     public function listChannels()
     {
         if (!$this->redisService->existKey(self::$cacheName)) {
@@ -43,7 +42,6 @@ class ReservationSystem
         }
     }
 
-    // Método para listar tours de un canal específico
     public function listTours($channelId)
     {
         $cacheKey = 'TOURS_' . $channelId;
@@ -58,7 +56,6 @@ class ReservationSystem
         }
     }
 
-    // Método para obtener detalles de un tour específico
     public function getTourDetails($channelId, $tourId)
     {
         $cacheKey = 'SINGLE_TOUR_' . $channelId . '_' . $tourId;
@@ -73,7 +70,7 @@ class ReservationSystem
         }
     }
 
-    // Métodos privados para manejar el almacenamiento en caché
+    // Private methods to handle caching
     private function cacheChannels($channels)
     {
         $this->redisService->storeItemInRedis(self::$cacheName, json_encode($channels), RedisService::REDIS_TYPE_STRING);
@@ -104,11 +101,6 @@ class ReservationSystem
         $this->redisService->storeItemInRedis($cacheKey, json_encode($tours), RedisService::REDIS_TYPE_STRING);
         $this->redisService->expireAt($cacheKey, $this->expirationTime);
     }
-    // private function cacheTourDetails($tourDetails, $cacheKey)
-    // {
-    //     $this->redisService->storeItemInRedis($cacheKey, json_encode($tourDetails), RedisService::REDIS_TYPE_STRING);
-    //     $this->redisService->expireAt($cacheKey, $this->expirationTime);
-    // }
 
     private function formatInfoTourJSONFromXML($toursXML)
     {
@@ -130,10 +122,9 @@ class ReservationSystem
     {
         $ratesAux = $singleTour['tour']['new_booking']['people_selection']['rate'];
         $rates = [];
-        if(isset($ratesAux['rate_id'])){
+        if (isset($ratesAux['rate_id'])) {
             $rates[] = ['rate_id' => $ratesAux['rate_id'], 'label_1' => $ratesAux['label_1'], 'label_2' => $ratesAux['label_2']];
-        }
-        else{
+        } else {
             foreach ($ratesAux as $rate) {
                 $rates[] = ['rate_id' => $rate['rate_id'], 'label_1' => $rate['label_1'], 'label_2' => $rate['label_2']];
             }
@@ -141,12 +132,12 @@ class ReservationSystem
 
         return $rates;
     }
-    
+
     public function getTotalAmountOfCustomers($query)
     {
         $total = 0;
-        foreach($query as $key => $value){
-            if($key != 'date'){
+        foreach ($query as $key => $value) {
+            if ($key != 'date') {
                 $total += (int)$value;
             }
         }
@@ -155,12 +146,11 @@ class ReservationSystem
 
     private function createOperator($channelId)
     {
-        $TourCMSOperator = new TourCMS(self::$marketPlaceIdForOperator, $this->redisService->getItemFromRedis('API_KEY_' . $channelId, RedisService::REDIS_TYPE_STRING), 'simplexml', self::$timeOut);
+        $TourCMSOperator = new TourCMSextension(self::$marketPlaceIdForOperator, $this->redisService->getItemFromRedis('API_KEY_' . $channelId, RedisService::REDIS_TYPE_STRING), 'simplexml', self::$timeOut);
         $TourCMSOperator->set_base_url(self::$baseUrl);
         return $TourCMSOperator;
     }
 
-    // Método para comprobar disponibilidad de un tour en una fecha específica
     public function checkTourAvailability($channelId, $tourId, $specs)
     {
         $tourCMSOperator = $this->createOperator($channelId);
@@ -169,7 +159,6 @@ class ReservationSystem
         return $availability;
     }
 
-    // Método para crear una reserva temporal
     public function createTemporalBooking($channel_id, $componentKey, $arrayCustomers, $bookingAs = 'agent')
     {
         // We make sure to have the list of channels and their API keys cached, since otherwise we wouldn't be able to create the Operator
@@ -217,15 +206,12 @@ class ReservationSystem
         // OR leave blank and TourCMS will create a blank customer
         foreach ($arrayCustomers as $key => $customer) {
             $customerNode = $customers->addChild('customer');
-            foreach($customer as $key => $value){
-                $customerNode->addChild(trim($key,"'"), $value);
+            foreach ($customer as $key => $value) {
+                $customerNode->addChild(trim($key, "'"), $value);
             }
         }
 
         // Query the TourCMS API, creating the booking
-
-        // error_log("Creating booking: " . $booking->asXML());
-        // error_log(("CHANNEL: " . $channel_id));
 
         $result = $tourcmsAmbiguous->start_new_booking($booking, $channel_id);
         $bkg = $result->booking;
@@ -238,12 +224,12 @@ class ReservationSystem
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
         curl_setopt($ch, CURLOPT_HEADER, true);
-        curl_setopt($ch, CURLOPT_NOBODY, true); // No necesitamos el cuerpo de la respuesta
+        curl_setopt($ch, CURLOPT_NOBODY, true); // We don't need the body of the response
 
-        // Ejecutar la solicitud
+        // Execute the request
         curl_exec($ch);
 
-        // Obtener la URL final después de seguir los redireccionamientos
+        // Get the final URL after following the redirects
         $finalUrl = curl_getinfo($ch, CURLINFO_EFFECTIVE_URL);
 
         curl_close($ch);
@@ -253,15 +239,15 @@ class ReservationSystem
 
     private function getQueryParam($url, $param)
     {
-        // Analizar la URL final y obtener la parte de la query string
+        // Parse the final URL and get the query string part
         $parsed_url = parse_url($url);
 
-        // Verificar si la URL tiene una query string
+        // Check if the URL has a query string
         if (isset($parsed_url['query'])) {
-            // Analizar la query string en un array
+            // Parse the query string into an array
             parse_str($parsed_url['query'], $query_params);
 
-            // Verificar si la variable que buscamos está definida en el array de parámetros
+            // Check if the variable we are looking for is defined in the parameter array
             if (isset($query_params[$param])) {
                 return $query_params[$param];
             }
@@ -281,31 +267,44 @@ class ReservationSystem
         return $booking_key;
     }
 
-    // Método para obtener una clave de reserva (booking key)
     private function requestBookingKeyForOperatorAsAgent($tourcmsOperator, $channel_id)
     {
         $params = "agent_marketplace_id=" . $this->TourCMSAgent->getMarketplaceId();
         $result = $tourcmsOperator->search_agents($params, $channel_id);
-        error_log(print_r($result, true)    );
         return json_decode(json_encode($result), true)['agent']['booking_key'];
     }
 
-    // Método para confirmar una reserva
-    public function commitBooking($channel_id, $booking_id, $bookingAs = 'agent')
+    public function commitBooking($channelId, $bookingId, $bookingAs = 'agent')
     {
         if ($bookingAs == 'agent') {
             $tourcmsAmbiguous = $this->TourCMSAgent;
         } elseif ($bookingAs == 'operator') {
-            $tourcmsAmbiguous = $this->createOperator($channel_id);
+            $tourcmsAmbiguous = $this->createOperator($channelId);
         } else {
-            $tourcmsAmbiguous = $this->createOperator($channel_id);
+            $tourcmsAmbiguous = $this->createOperator($channelId);
         }
 
         $booking = new SimpleXMLElement('<booking />');
-        $booking->addChild('booking_id', $booking_id);
+        $booking->addChild('booking_id', $bookingId);
 
-        $result = $tourcmsAmbiguous->commit_new_booking($booking, $channel_id);
-        return $result;
+        $result = $tourcmsAmbiguous->commit_new_booking($booking, $channelId);
+        return $result->booking;
+    }
+
+    public function showBooking($channelId, $bookingId)
+    {
+        $this->listChannels();
+        $operator = $this->createOperator($channelId);
+        $cacheKey = 'BOOKING_' . $channelId . '_' . $bookingId;
+        if (!$this->redisService->existKey($cacheKey)) {
+            $operator = $this->createOperator($channelId);
+            $bookingDetails = $operator->show_booking($bookingId, $channelId);
+            $formatedbookingDetails = json_encode($bookingDetails,);
+            $this->cacheGeneralJSON($bookingDetails, $cacheKey);
+            return json_decode(html_entity_decode($formatedbookingDetails), true);
+        } else {
+            return json_decode(htmlspecialchars_decode($this->redisService->getItemFromRedis($cacheKey, RedisService::REDIS_TYPE_STRING)), true);
+        }
     }
 
     public function setCacheName($cacheName)
