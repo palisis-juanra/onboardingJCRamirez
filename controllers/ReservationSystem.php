@@ -301,11 +301,41 @@ class ReservationSystem
             $bookingDetails = $operator->show_booking($bookingId, $channelId);
             $formatedbookingDetails = json_encode($bookingDetails,);
             $this->cacheGeneralJSON($bookingDetails, $cacheKey);
-            return json_decode(html_entity_decode($formatedbookingDetails), true);
+            return json_decode(html_entity_decode($formatedbookingDetails), true)['booking'];
         } else {
-            return json_decode(htmlspecialchars_decode($this->redisService->getItemFromRedis($cacheKey, RedisService::REDIS_TYPE_STRING)), true);
+            return json_decode(html_entity_decode($this->redisService->getItemFromRedis($cacheKey, RedisService::REDIS_TYPE_STRING)), true)['booking'];
         }
     }
+
+    public function forceShowBookingUpdate($channelId, $bookingId)
+    {
+        $this->listChannels();
+        $operator = $this->createOperator($channelId);
+        $cacheKey = 'BOOKING_' . $channelId . '_' . $bookingId;
+        $operator = $this->createOperator($channelId);
+        $bookingDetails = $operator->show_booking($bookingId, $channelId);
+        $formatedbookingDetails = json_encode($bookingDetails,);
+        $this->cacheGeneralJSON($bookingDetails, $cacheKey);
+        return json_decode(html_entity_decode($formatedbookingDetails), true)['booking'];
+    }
+
+    public function cancelBooking($channelId, $bookingId)
+    {
+        $tourCMSOperator = $this->createOperator($channelId);
+        $booking = new SimpleXMLElement('<booking />');
+
+        // Must set the Booking ID on the XML, so TourCMS knows which to cancel
+        $booking->addChild('booking_id', $bookingId);
+
+        // Optionally add a note explaining why the booking is cancelled
+        $booking->addChild('note', 'Booking created accidentally');
+
+        // Call TourCMS API, cancelling the booking
+        $result = $tourCMSOperator->cancel_booking($booking, $channelId);
+
+        return $result->booking;
+    }
+
 
     public function setCacheName($cacheName)
     {

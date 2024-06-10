@@ -7,91 +7,136 @@
             <div class="container mt-4">
                 <div class="row">
                     <div class=" mb-2">
-                        <h3>Edit Booking {{booking.booking_id}}</h3>
-                        <h4>{{ booking.booking_name }}</h1>
-                        <a href="{{booking.voucher_url}}" target="_blank">Printo Voucher</a>
+                        <h3>Edit Booking {{booking_id}}</h3>
+                        <h4>{{ booking_name }}</h1>
+                        <a href="{{voucher_url}}" target="_blank">Printo
+                            Voucher</a>
                     </div>
                     <!-- Lead customer card -->
                     <div class="col-md-3">
                         <div class="card card-custom card-dark text-center p-3">
-                            <h5 class="card-title"><i class="icon fas fa-user"></i> Lead Customer</h5>
-                            <p>Name: {{# booking.lead_customer_name }} {{ booking.lead_customer_name }} {{/ booking.lead_customer_name }}{{^ booking.lead_customer_name }} Undefined {{/ booking.lead_customer_name }}</p>
-                            <p>Tel: {{# booking.lead_customer_tel_home }} {{ booking.lead_customer_tel_home }}{{/ booking.lead_customer_tel_home }}{{^ booking.lead_customer_tel_home }} Undefined{{/ booking.lead_customer_tel_home }}</p>
-                            <p>Nationality: {{# booking.nationality }}{{ booking.nationality_text }}{{/ booking.nationality }}{{^ booking.nationality }} Undefined {{/ booking.nationality }}</p>
-                            <p>Email: {{# booking.lead_customer_email }}{{ booking.lead_customer_email }}{{/ booking.lead_customer_email }}{{^ booking.lead_customer_email }}Undefined{{/ booking.lead_customer_email }}</p>
-                            <a href="#" class="btn btn-light mt-3">Make lead customer non travelling</a>
+                            <h5 class="card-title"><i
+                                    class="icon fas fa-user"></i> Lead
+                                Customer</h5>
+                            <p>Name: {{# lead_customer_name }} {{
+                                lead_customer_name }} {{/
+                                lead_customer_name }}{{^
+                                lead_customer_name }} Undefined {{/
+                                lead_customer_name }}</p>
+                            <p>Tel: {{# lead_customer_tel_home }} {{
+                                lead_customer_tel_home }}{{/
+                                lead_customer_tel_home }}{{^
+                                lead_customer_tel_home }} Undefined{{/
+                                lead_customer_tel_home }}</p>
+                            <p>Nationality: {{# nationality }}{{
+                                nationality_text }}{{/
+                                nationality }}{{^ nationality }}
+                                Undefined {{/ nationality }}</p>
+                            <p>Email: {{# lead_customer_email }}{{
+                                lead_customer_email }}{{/
+                                lead_customer_email }}{{^
+                                lead_customer_email }}Undefined{{/
+                                lead_customer_email }}</p>
+                            <a href="#" class="btn btn-light mt-3">Make lead
+                                customer non travelling</a>
                         </div>
                     </div>
                     <!-- No travel agent card -->
                     <div class="col-md-3">
                         <div class="card card-custom text-center p-3">
-                            <h5 class="card-title"><i class="icon fas fa-plane-slash"></i> {{booking.agent_name}}</h5>
-                            <p>Date: {{ booking.start_date }}</p>
-                            <p>Customers: {{ booking.customer_count }}</p>
-                            <p>Made on: {{ booking.made_date_time }}</p>
-                            <p>Booking by: {{ booking.made_name }}</p>
-                            <p>Departure: {{ booking.start_date }}</p>
+                            <h5 class="card-title"><i
+                                    class="icon fas fa-plane-slash"></i>
+                                {{agent_name}}</h5>
+                            <p>Date: {{ start_date }}</p>
+                            <p>Customers: {{ customer_count }}</p>
+                            <p>Made on: {{ made_date_time }}</p>
+                            <p>Booking by: {{ made_name }}</p>
+                            <p>Departure: {{ start_date }}</p>
                         </div>
                     </div>
                     <!-- Transaction card -->
                     <div class="col-md-3">
-                        <div class="card card-custom card-orange text-center p-3">
-                            <h5 class="card-title"><i class="icon fas fa-receipt"></i> Transaction</h5>
-                            <p>Sale value: {{ booking.sales_revenue_display }}</p>
-                            <p>Balance: {{ booking.balance_display }} ({{ booking.balance_due }})</p>
-                            <p>Owed by: {{# booking.balance_owed_by }}Lead customer{{/ booking.balance_owed_by }}{{^ booking.balance_owed_by }}Undefined{{/ booking.balance_owed_by }}</p>
-                            <a href="#" class="btn btn-light mt-3">Add Payment / Refund</a>
-                        </div>
-                    </div>
+                        <div
+                            class="card card-custom card-orange text-center p-3">
+                            <h5 class="card-title"><i
+                                    class="icon fas fa-receipt"></i>
+                                Transaction</h5>
+                            <p>Sale value: {{ sales_revenue_display
+                                }}</p>
+                            <p>Balance: {{ balance_display }} ({{
+                                balance_due }})</p>
+                            <p>Owed by: {{# balance_owed_by }}Lead
+                                customer{{/ balance_owed_by }}{{^
+                                balance_owed_by }}Undefined{{/
+                                    balance_owed_by }}</p>
+                                    <a href="#" class="btn btn-light mt-3">Add Payment /
+                                        Refund</a>
+                                        </div>
+                                        </div>
                     <!-- Confirmed card -->
                     <div class="col-md-3">
                         <div class="card card-custom text-center p-3">
-                            <h5 class="card-title"><i class="icon fas fa-check-circle text-success"></i> {{ booking.status_text }}</h5>
-                            <p>{{ booking.made_date_time }}</p>
-                            <div class="form-group">
-                                <select class="form-control">
-                                    <option>{{ booking.cancel_text }}</option>
-                                    <option>Cancelled</option>
-                                </select>
-                            </div>
-                            <button class="btn btn-primary mt-3">Update status</button>
+                            <h5 class="card-title"><i
+                                    class="icon fas fa-check-circle text-success"></i>
+                                    {{ status_text }}</h5>
+                            <p>Booked at: {{made_date_time }}</p>
+                            <p>Current status: {{ cancel_text }}</p>
+                            <form action="bookingDetails" method="POST"
+                                id="updateCancelation">
+                                <div class="form-group">
+                                    <input type="hidden" name="postBookingId"
+                                    value="{{ booking.booking_id }}">
+                                    <input type="hidden" name="postChannelId"
+                                    value="{{booking.channel_id}}">
+                                    <input type="hidden"
+                                        name="postUpdateCancelation">
+                                        <button class="btn btn-danger mt-3"
+                                        name="postCancelation">Cancel
+                                        booking</button>
+                                </div>
+                            </form>
                         </div>
                     </div>
-                </div>
+                    </div>
             </div>
         </article>
-        <!-- <article id="CustomersInfo">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Id</th>
-                        <th>Title</th>
-                        <th>First Name</th>
-                        <th>Middle Name</th>
-                        <th>Surname</th>
-                        <th>Nationality</th>
-                        <th>Email</th>
-                        <th>Phone</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {{#customers}}
-                    <tr>
-                        <td>{{customer_id}}</td>
-                        <td>{{title}}</td>
-                        <td>{{firstname}}</td>
-                        <td>{{middlename}}</td>
-                        <td>{{surname}}</td>
-                        <td>{{nationality}}</td>
-                        <td>{{email}}</td>
-                        <td>{{phone}}</td>
-                    </tr>
-                    {{/customers}}
-                </tbody>
-            </table>
-        </article> -->
-
         {{/content.bookingDetails}}
+        {{#content.customersFromBooking.length}}
+        <article id="CustomersInfo">
+            <div class="container">
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Id</th>
+                            <th scope="col">Title</th>
+                            <th scope="col">First Name</th>
+                            <th scope="col">Middle Name</th>
+                            <th scope="col">Surname</th>
+                            <th scope="col">Nationality</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Phone</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#.}}
+                        <tr>
+                            <td>{{customer_id}}</td>
+                            <td>{{title}}</td>
+                            <td>{{firstname}}</td>
+                            <td>{{middlename}}</td>
+                            <td>{{surname}}</td>
+                            <td>{{nationality}}</td>
+                            <td>{{email}}</td>
+                            <td>{{phone}}</td>
+                        </tr>
+                        {{/.}}
+                    </tbody>
+                </table>
+            </div>
+        </article>
+        {{/content.customersFromBooking.length}}
+
     </main>
     {{>footer}}
     {{>scripts}}
