@@ -1,27 +1,26 @@
-/* Contenedor principal del formulario */
 #customersForms {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
     gap: 20px;
 }
 
-/* Estilo de cada contenedor de cliente */
 #customersForms .customer-container {
     border: 1px solid #ccc;
     padding: 20px;
     border-radius: 5px;
 }
 
-/* Estructura de las filas dentro del contenedor */
 #customersForms .form-row {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
 }
 
-/* Ajuste de tamaño de cada grupo de formulario */
+
 #customersForms .form-group {
     flex: 1;
     min-width: 100px;
     margin-bottom: 15px;
 }
+
+

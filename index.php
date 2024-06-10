@@ -7,22 +7,16 @@ include_once 'config.php';
 Mustache_Autoloader::register();
 
 use TourCMS\Utils\TourCMS as TourCMS;
-use function PHPSTORM_META\type;
-use PhpParser\Node\Expr\Cast;
 use onboarding\services\RedisService;
-use PhpParser\Node\Expr\Print_;
+//use function PHPSTORM_META\type;
+//use PhpParser\Node\Expr\Cast;
+//use PhpParser\Node\Expr\Print_;
 
 
 $redis = new RedisService($REDIS_HOST, $REDIS_PORT, $REDIS_PASSWORD);
-$tourcms = new TourCMS($MARKETPLACE_ID, $AGENT_API_KEY, 'simplexml', $TIMEOUT);
+$tourcms = new TourCMSextension($MARKETPLACE_ID, $AGENT_API_KEY, 'simplexml', $TIMEOUT);
 $tourcms->set_base_url($BASE_URL);
 $expirationTime = time() + 600;
-// $apiKey = "6f24ac3ac4ed";
-// $marketplaceId = 33495;
-// $apiKey = "52fc7e3d2ef7";
-// $channelId = 142;
-// $params = '';
-// $cacheName = 'channelList';
 
 
 $reserSys = new ReservationSystem($tourcms, $redis, $expirationTime);
@@ -33,12 +27,18 @@ $data = $templates->getData($page);
 
 
 if ($page == 'bookingDetails') {
-    
+    if(isset($_POST['postSearchBooking'])){
+        $data['content']['bookingDetails'] = $reserSys->showBooking($_POST['postChannelId'], $_POST['postBookingId']);
+    }
 
 } elseif ($page == 'formCustomers') {
     if(isset($_POST['postCommitBooking'])){
         $booking = $reserSys->commitBooking($_POST['postChannelId'], $_POST['postRequestedBooking'], $_POST['postRequestBookingAs']);
+        error_log(print_r($booking, true));
         $data['content']['bookingDone'] = true;
+        $data['content']['bookingChannel'] = $booking->channel_id;
+        $data['content']['bookingId'] = $booking->booking_id;
+
     } elseif (isset($_POST['postRequesBooking'])) {
         $booking = $reserSys->createTemporalBooking($_POST['postChannelId'], $_POST['postComponentKey'], $_POST['postCustomersArray'], $_POST['postRequestBookingAs']);
         $data['content']['resquestedBooking']['channel_id'] = $_POST['postChannelId'];
@@ -67,7 +67,6 @@ if ($page == 'bookingDetails') {
         $data['content']['availability'] = $reserSys->checkTourAvailability($_POST['postChannelId'], $_POST['postTourId'], $_POST['postQuery']);
         $data['content']['availability']['totalAmountOfCustomers'] = $reserSys->getTotalAmountOfCustomers($_POST['postQuery']);
         $data['content']['availability']['bookingAs'] = $_POST['postBookingAs'];
-        // error_log(print_r($data['content']['availability'], true));
     }
 } elseif ($page == 'tours') {
     $channels = new ArrayIterator($reserSys->listChannels());
@@ -79,12 +78,10 @@ if ($page == 'bookingDetails') {
 } elseif ($page == 'channels') {
     $channels = new ArrayIterator($reserSys->listChannels());
     $data['content']['channels'] = $channels;
-    error_log(print_r($data, true));
 }
 
 try {
     echo $templates->render($page, $data);
 } catch (Mustache_Exception_UnknownTemplateException $e) {
-    // La plantilla no existe, renderizar la plantilla 404
     echo $templates->render('404', $data);
 }
