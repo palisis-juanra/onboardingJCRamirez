@@ -1,0 +1,249 @@
+{{> head}}
+
+<body>
+    {{> header}}
+    <main>
+        <div class="container">
+            {{# content.customerDetails.customer }}
+            <form action="updateCustomer" method="POST" class="">
+                <div class="form-group col mx-2 mt-3">
+                    <label for="customer_id">Customer ID</label>
+                    <input type="text" class="form-control" id="customer_id" name="postInfoCustomer[customer_id]"
+                        aria-label="Disabled input example" readonly value="{{customer_id}}">
+                </div>
+                <div class="form-row d-flex">
+                    <div class="form-group col mx-2 mt-3">
+                        <label for="title">Title</label>
+                        <input type="text" class="form-control" id="title" name="postInfoCustomer[title]"
+                            value="{{title}}">
+                    </div>
+                    <div class="form-group col mx-2 mt-3">
+                        <label for="firstname">First Name</label>
+                        <input type="text" class="form-control" id="firstname" name="postInfoCustomer[firstname]"
+                            required value="{{firstname}}">
+                    </div>
+                    <div class="form-group col mx-2 mt-3">
+                        <label for="middlename">Middle Name</label>
+                        <input type="text" class="form-control" id="middlename" name="postInfoCustomer[middlename]"
+                            value="{{middlename}}">
+                    </div>
+                    <div class="form-group col mx-2 mt-3">
+                        <label for="surname">Surname</label>
+                        <input type="text" class="form-control" id="surname" name="postInfoCustomer[surname]" required
+                            value="{{surname}}">
+                    </div>
+                </div>
+                <div class="form-row d-flex">
+                    <div class="form-group col mx-2 mt-3">
+                        <label for="email">Email</label>
+                        <input type="email" class="form-control" id="email" name="postInfoCustomer[email]"
+                            value="{{email}}">
+                    </div>
+                    <div class="form-group col mx-2 mt-3">
+                        <label for="tel_home">Tel Home</label>
+                        <input type="text" class="form-control" id="tel_home" name="postInfoCustomer[tel_home]"
+                            value="{{tel_home}}">
+                    </div>
+                    <div class="form-group col mx-2 mt-3">
+                        <label for="tel_mobile">Tel Mobile</label>
+                        <input type="text" class="form-control" id="tel_mobile" name="postInfoCustomer[tel_mobile]"
+                            value="{{tel_mobile}}">
+                    </div>
+                </div>
+                <div class="form-row d-flex">
+
+                    <div class="form-group col mx-2 mt-3">
+                        <label for="fax">Fax</label>
+                        <input type="text" class="form-control" id="fax" name="postInfoCustomer[fax]" value="{{fax}}">
+                    </div>
+                    <div class="form-group col mx-2 mt-3">
+                        <label for="tel_work">Tel Work</label>
+                        <input type="text" class="form-control" id="tel_work" name="postInfoCustomer[tel_work]"
+                            value="{{tel_work}}">
+                    </div>
+                    <div class="form-group col mx-2 mt-3">
+                        <label for="tel_sms">Tel SMS</label>
+                        <input type="text" class="form-control" id="tel_sms" name="postInfoCustomer[tel_sms]"
+                            value="{{tel_sms}}">
+                    </div>
+                    <div class="form-group col mx-2 mt-3">
+                        <label for="perm_email">Opt-in to Email Marketing</label>
+                        <select class="form-control" id="perm_email" name="postInfoCustomer[perm_email]">
+                            <option value="">Default</option>
+                            <option value="1">Yes</option>
+                            <option value="0">No</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row d-flex">
+
+                    <div class="form-group col mx-2 mt-3">
+                        <label for="contact_note">Contact Note</label>
+                        <textarea class="form-control" id="contact_note" name="postInfoCustomer[contact_note]"
+                            rows="3"> {{ contact_note }} </textarea>
+                    </div>
+                    <div class="form-group col mx-2 mt-3">
+                        <label for="address">Address</label>
+                        <textarea class="form-control" id="address" name="postInfoCustomer[address]"
+                            rows="3"> {{ address }} </textarea>
+                    </div>
+                </div>
+
+                <div class="form-row d-flex">
+
+                    <div class="form-group col mx-2 mt-3">
+                        <label for="city">City</label>
+                        <input type="text" class="form-control" id="city" name="postInfoCustomer[city]"
+                            value="{{city}}">
+                    </div>
+                    <div class="form-group col mx-2 mt-3">
+                        <label for="county">County/State</label>
+                        <input type="text" class="form-control" id="county" name="postInfoCustomer[county]"
+                            value="{{county}}">
+                    </div>
+                    <div class="form-group col mx-2 mt-3">
+                        <label for="postcode">Postcode/Zipcode</label>
+                        <input type="text" class="form-control" id="postcode" name="postInfoCustomer[postcode]"
+                            value="{{postcode}}">
+                    </div>
+                    <div class="form-group col mx-2 mt-3">
+                        <label for="country">Country</label>
+                        <select class="form-control" id="country" name="postInfoCustomer[country]">
+                            {{> inputSelectCountries}}
+                        </select>
+                    </div>
+                    <div class="form-group col mx-2 mt-3">
+                        <label for="nationality">Nationality</label>
+                        <select class="form-control" id="nationality" name="postInfoCustomer[nationality]">
+                            {{> inputSelectCountries}}
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row d-flex">
+                    <div class="form-group col mx-2 mt-3">
+                        <label for="gender">Gender</label>
+                        <select class="form-control" id="gender" name="postInfoCustomer[gender]">
+                            <option value="">Unknown</option>
+                            <option value="m">Male</option>
+                            <option value="f">Female</option>
+                            <option value="x">Indeterminate</option>
+                        </select>
+                    </div>
+                    <div class="form-group col mx-2 mt-3">
+                        <label for="dob">Date of Birth</label>
+                        <input type="date" class="form-control" id="dob" name="postInfoCustomer[dob]" value="{{dob}}">
+                    </div>
+                    <div class="form-group col mx-2 mt-3">
+                        <label for="agecat">Age Category</label>
+                        <select class="form-control" id="agecat" name="postInfoCustomer[agecat]">
+                            <option value="i">Infant</option>
+                            <option value="c">Child</option>
+                            <option value="a">Adult</option>
+                            <option value="s">Senior</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row d-flex">
+
+                    <div class="form-group col mx-2 mt-3">
+                        <label for="pass_num">Passport Number</label>
+                        <input type="text" class="form-control" id="pass_num" name="postInfoCustomer[pass_num]"
+                            value="{{pass_num}}">
+                    </div>
+                    <div class="form-group col mx-2 mt-3">
+                        <label for="pass_issue">Passport Issue Place</label>
+                        <input type="text" class="form-control" id="pass_issue" name="postInfoCustomer[pass_issue]"
+                            value="{{pass_issue}}">
+                    </div>
+                    <div class="form-group col mx-2 mt-3">
+                        <label for="pass_issue_date">Passport Issue Date</label>
+                        <input type="date" class="form-control" id="pass_issue_date"
+                            name="postInfoCustomer[pass_issue_date]" value="{{pass_issue_date}}">
+                    </div>
+                    <div class="form-group col mx-2 mt-3">
+                        <label for="pass_expiry_date">Passport Expiry Date</label>
+                        <input type="date" class="form-control" id="pass_expiry_date"
+                            name="postInfoCustomer[pass_expiry_date]" value="{{pass_expiry_date}}">
+                    </div>
+                </div>
+
+                <div class="form-group col mx-2 mt-3">
+                    <label for="wherehear">Where did you hear about us?</label>
+                    <input type="text" class="form-control" id="wherehear" name="postInfoCustomer[wherehear]"
+                        value="{{wherehear}}">
+                </div>
+                <div class="form-row d-flex">
+                    <div class="form-group col mx-2 mt-3">
+                        <label for="diet">Dietary Requirements</label>
+                        <textarea class="form-control" id="diet" name="postInfoCustomer[diet]"
+                            rows="3"> {{ diet }} </textarea>
+                    </div>
+                    <div class="form-group col mx-2 mt-3">
+                        <label for="medical">Medical Conditions</label>
+                        <textarea class="form-control" id="medical" name="postInfoCustomer[medical]"
+                            rows="3"> {{ medical }} </textarea>
+                    </div>
+                </div>
+                <div class="form-row d-flex">
+
+                    <div class="form-group col mx-2 mt-3">
+                        <label for="nok_name">Emergency Contact Name</label>
+                        <input type="text" class="form-control" id="nok_name" name="postInfoCustomer[nok_name]"
+                            value="{{nok_name}}">
+                    </div>
+                    <div class="form-group col mx-2 mt-3">
+                        <label for="nok_relationship">Emergency Contact Relationship</label>
+                        <input type="text" class="form-control" id="nok_relationship"
+                            name="postInfoCustomer[nok_relationship]" value="{{nok_relationship}}">
+                    </div>
+                    <div class="form-group col mx-2 mt-3">
+                        <label for="nok_tel">Emergency Contact Telephone</label>
+                        <input type="text" class="form-control" id="nok_tel" name="postInfoCustomer[nok_tel]"
+                            value="{{nok_tel}}">
+                    </div>
+                </div>
+
+                <div class="form-group col mx-2 mt-3">
+                    <label for="nok_contact">Emergency Contact Note</label>
+                    <textarea class="form-control" id="nok_contact" name="postInfoCustomer[nok_contact]"
+                        rows="3"> {{ nok_contact }} </textarea>
+                </div>
+                <div class="form-group col mx-2 mt-3">
+                    <label for="agent_customer_ref">Agent Customer Reference</label>
+                    <input type="text" class="form-control" id="agent_customer_ref"
+                        name="postInfoCustomer[agent_customer_ref]" value="{{agent_customer_ref}}">
+                </div>
+                <input type="hidden" name="postChannelId" value="{{channel_id}}">
+                <input type="hidden" name="postCustomerId" value="{{customer_id}}">
+                <input type="hidden" name="updateCustomer">
+                <input type="hidden" name="postSearchCustomer">
+                <button type="submit" class="btn btn-primary mt-5">Update contact info</button>
+            </form>
+        </div>
+    </main>
+    <script>
+        const selectOptions = [
+            { selectId: 'country', loadedValue: "{{ country }}" },
+            { selectId: 'nationality', loadedValue: "{{ nationality }}" },
+            { selectId: 'perm_email', loadedValue: "{{ perm_email }}" },
+            { selectId: 'gender', loadedValue: '{{ gender }}' },
+            { selectId: 'agecat', loadedValue: '{{ agecat }}' }
+        ];
+
+        for (const option of selectOptions) {
+            const select = document.getElementById(option.selectId);
+            const selectOptions = select.getElementsByTagName('option');
+            for (let i = 0; i < selectOptions.length; i++) {
+                if (selectOptions[i].value == option.loadedValue) {
+                    selectOptions[i].selected = true;
+                    break;
+                }
+            }
+        }
+    </script>
+    {{/ content.customerDetails.customer }}
+    {{> scripts}}
+    {{> footer}}
+</body>
+
+</html>

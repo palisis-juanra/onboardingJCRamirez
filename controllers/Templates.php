@@ -92,6 +92,13 @@ class Templates
                     'body' => 'This is the booking details page'
                 ];
                 break;
+            case 'updateCustomer':
+                $data['content'] = [
+                    'title' => 'Update Customer',
+                    'heading' => 'Update Customer',
+                    'body' => 'This is the update customer page'
+                ];
+                break;
             case 'about':
                 $data['content'] = [
                     'title' => 'About',

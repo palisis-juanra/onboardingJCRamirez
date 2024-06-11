@@ -319,7 +319,7 @@ class ReservationSystem
         return json_decode(html_entity_decode($formatedbookingDetails), true)['booking'];
     }
 
-    public function cancelBooking($channelId, $bookingId)
+    public function cancelBooking($channelId, $bookingId, $note = 'Booking cancelled')
     {
         $tourCMSOperator = $this->createOperator($channelId);
         $booking = new SimpleXMLElement('<booking />');
@@ -328,12 +328,33 @@ class ReservationSystem
         $booking->addChild('booking_id', $bookingId);
 
         // Optionally add a note explaining why the booking is cancelled
-        $booking->addChild('note', 'Booking created accidentally');
+        $booking->addChild('note', $note);
 
         // Call TourCMS API, cancelling the booking
         $result = $tourCMSOperator->cancel_booking($booking, $channelId);
 
         return $result->booking;
+    }
+
+    public function showCustomer($customerId, $channelId)
+    {
+        $this->listChannels();
+        $operator = $this->createOperator($channelId);
+        $customerDetails = $operator->show_customer($customerId, $channelId);
+        return $customerDetails;
+
+    }
+
+    public function updateCustomer($channelId, $customerData)
+    {
+        $this->listChannels();
+        $operator = $this->createOperator($channelId);
+        $customer = new SimpleXMLElement('<customer />');
+        foreach ($customerData as $key => $value) {
+            $customer->addChild($key, $value);
+        }
+        $result = $operator->update_customer($customer, $channelId);
+        return $result;
     }
 
 
