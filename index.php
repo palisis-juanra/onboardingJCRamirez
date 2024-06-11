@@ -23,33 +23,35 @@ $reserSys = new ReservationSystem($tourcms, $redis, $expirationTime);
 $templates = new Templates();
 $page = $templates->getPageUrl();
 $data = $templates->getData($page);
-
-
-
-if ($page == 'bookingDetails') {
-    if(isset($_POST['postUpdateCancelation'])){
-        $cancelation = $reserSys->cancelBooking($_POST['postChannelId'], $_POST['postBookingId']);
-        $data['content']['bookingDetails'] = $reserSys->forceShowBookingUpdate($_POST['postChannelId'], $_POST['postBookingId']);
+if ($page == 'updateCustomer') {
+    if (isset($_POST['postSearchCustomer'])) {
+        if (isset($_POST['updateCustomer'])) {
+            $reserSys->updateCustomer($_POST['postChannelId'], $_POST['postInfoCustomer']);
+            // error_log(print_r($_POST['postInfoCustomer'], true));
         }
-        elseif(isset($_POST['postSearchBooking'])){
-            $data['content']['bookingDetails'] = $reserSys->showBooking($_POST['postChannelId'], $_POST['postBookingId']);
-            $data['content']['customersFromBooking'] = formatCustomers($data['content']['bookingDetails']);
-            error_log(print_r($data['content'], true));
+        $data['content']['customerDetails'] = $reserSys->showCustomer($_POST['postCustomerId'], $_POST['postChannelId']);
+        // error_log(print_r($data['content']['customerDetails'], true));
     }
-
+} elseif ($page == 'bookingDetails') {
+    if (isset($_POST['postUpdateCancelation'])) {
+        $cancelation = $reserSys->cancelBooking($_POST['postChannelId'], $_POST['postBookingId'], $_POST['postCancelationReason']);
+        $data['content']['bookingDetails'] = $reserSys->forceShowBookingUpdate($_POST['postChannelId'], $_POST['postBookingId']);
+        generalFormat($data, $data['content']['bookingDetails']);
+    } elseif (isset($_POST['postSearchBooking'])) {
+        $data['content']['bookingDetails'] = $reserSys->showBooking($_POST['postChannelId'], $_POST['postBookingId']);
+        generalFormat($data, $data['content']['bookingDetails']);
+    }
 } elseif ($page == 'formCustomers') {
-    if(isset($_POST['postCommitBooking'])){
+    if (isset($_POST['postCommitBooking'])) {
         $booking = $reserSys->commitBooking($_POST['postChannelId'], $_POST['postRequestedBooking'], $_POST['postRequestBookingAs']);
         $data['content']['bookingDone'] = true;
         $data['content']['bookingChannel'] = $booking->channel_id;
         $data['content']['bookingId'] = $booking->booking_id;
-
     } elseif (isset($_POST['postRequesBooking'])) {
         $booking = $reserSys->createTemporalBooking($_POST['postChannelId'], $_POST['postComponentKey'], $_POST['postCustomersArray'], $_POST['postRequestBookingAs']);
         $data['content']['resquestedBooking']['channel_id'] = $_POST['postChannelId'];
         $data['content']['resquestedBooking']['requestBookingAs'] = $_POST['postRequestBookingAs'];
         $data['content']['resquestedBooking']['resquestedBookingResponse'] = $booking;
-
     } else {
         $data['content']['formCustomers']['channel_id'] = $_POST['postChannelId'];
         $data['content']['formCustomers']['tour_id'] = $_POST['postTourId'];
@@ -91,16 +93,21 @@ try {
 }
 
 
+function generalFormat(&$data, $bookingInfo)
+{
+    $data['content']['customersFromBooking'] = formatCustomers($bookingInfo);
+    $data['content']['componentsFromBooking'] = formatComponents($bookingInfo);
+}
+
 function formatCustomers($bookingInfo)
 {
     $aux_array = ['customer_id', 'firstname', 'middlename', 'surname', 'customer_email', 'customer_tel_home', 'nationality_text'];
     $customers = [];
-    if(isset($bookingInfo['customers']['customer']['customer_id'])){
+    if (isset($bookingInfo['customers']['customer']['customer_id'])) {
         foreach ($aux_array as $key) {
             $customers[0][$key] = $bookingInfo['customers']['customer'][$key];
         }
-    }
-    else{
+    } else {
         foreach ($bookingInfo['customers']['customer'] as $customerFromBooking) {
             $customerAux = [];
             foreach ($aux_array as $key) {
@@ -110,4 +117,24 @@ function formatCustomers($bookingInfo)
         }
     }
     return $customers;
+}
+
+function formatComponents($bookingInfo)
+{
+    $aux_array = ['component_id', 'product_id', 'date_id', 'date_type', 'product_code', 'start_date', 'end_date', 'rate_breakdown', 'sale_price', 'sale_currency'];
+    $components = [];
+    if (isset($bookingInfo['components']['component']['component_id'])) {
+        foreach ($aux_array as $key) {
+            $components[0][$key] = $bookingInfo['components']['component'][$key];
+        }
+    } else {
+        foreach ($bookingInfo['components']['component'] as $componentFromBooking) {
+            $componentAux = [];
+            foreach ($aux_array as $key) {
+                $componentAux[$key] = $componentFromBooking[$key];
+            }
+            $components[] = $componentAux;
+        }
+    }
+    return $components;
 }

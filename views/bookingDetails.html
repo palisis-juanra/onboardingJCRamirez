@@ -1,4 +1,5 @@
 {{>head}}
+
 <body>
     {{>header}}
     <main>
@@ -9,14 +10,13 @@
                     <div class=" mb-2">
                         <h3>Edit Booking {{booking_id}}</h3>
                         <h4>{{ booking_name }}</h1>
-                        <a href="{{voucher_url}}" target="_blank">Printo
-                            Voucher</a>
+                            <a href="{{voucher_url}}" target="_blank">Printo
+                                Voucher</a>
                     </div>
                     <!-- Lead customer card -->
                     <div class="col-md-3">
                         <div class="card card-custom card-dark text-center p-3">
-                            <h5 class="card-title"><i
-                                    class="icon fas fa-user"></i> Lead
+                            <h5 class="card-title"><i class="icon fas fa-user"></i> Lead
                                 Customer</h5>
                             <p>Name: {{# lead_customer_name }} {{
                                 lead_customer_name }} {{/
@@ -44,8 +44,7 @@
                     <!-- No travel agent card -->
                     <div class="col-md-3">
                         <div class="card card-custom text-center p-3">
-                            <h5 class="card-title"><i
-                                    class="icon fas fa-plane-slash"></i>
+                            <h5 class="card-title"><i class="icon fas fa-plane-slash"></i>
                                 {{agent_name}}</h5>
                             <p>Date: {{ start_date }}</p>
                             <p>Customers: {{ customer_count }}</p>
@@ -56,10 +55,8 @@
                     </div>
                     <!-- Transaction card -->
                     <div class="col-md-3">
-                        <div
-                            class="card card-custom card-orange text-center p-3">
-                            <h5 class="card-title"><i
-                                    class="icon fas fa-receipt"></i>
+                        <div class="card card-custom card-orange text-center p-3">
+                            <h5 class="card-title"><i class="icon fas fa-receipt"></i>
                                 Transaction</h5>
                             <p>Sale value: {{ sales_revenue_display
                                 }}</p>
@@ -68,43 +65,39 @@
                             <p>Owed by: {{# balance_owed_by }}Lead
                                 customer{{/ balance_owed_by }}{{^
                                 balance_owed_by }}Undefined{{/
-                                    balance_owed_by }}</p>
-                                    <a href="#" class="btn btn-light mt-3">Add Payment /
-                                        Refund</a>
-                                        </div>
-                                        </div>
+                                balance_owed_by }}</p>
+                            <a href="#" class="btn btn-light mt-3">Add Payment /
+                                Refund</a>
+                        </div>
+                    </div>
                     <!-- Confirmed card -->
                     <div class="col-md-3">
                         <div class="card card-custom text-center p-3">
-                            <h5 class="card-title"><i
-                                    class="icon fas fa-check-circle text-success"></i>
-                                    {{ status_text }}</h5>
+                            <h5 class="card-title"><i class="icon fas fa-check-circle text-success"></i>
+                                {{ status_text }}</h5>
                             <p>Booked at: {{made_date_time }}</p>
                             <p>Current status: {{ cancel_text }}</p>
-                            <form action="bookingDetails" method="POST"
-                                id="updateCancelation">
+                            {{^cancel_reason}}
+                            <form action="bookingDetails" method="POST" id="updateCancelation">
                                 <div class="form-group">
-                                    <input type="hidden" name="postBookingId"
-                                    value="{{ booking.booking_id }}">
-                                    <input type="hidden" name="postChannelId"
-                                    value="{{booking.channel_id}}">
-                                    <input type="hidden"
-                                        name="postUpdateCancelation">
-                                        <button class="btn btn-danger mt-3"
-                                        name="postCancelation">Cancel
-                                        booking</button>
+                                    <input type="hidden" name="postBookingId" value="{{ booking_id }}">
+                                    <input type="hidden" name="postChannelId" value="{{channel_id}}">
+                                    <input type="hidden" name="postUpdateCancelation">
+                                    <textarea name="postCancelationReason" rows="3"placeholder='Enter your reason'></textarea>
                                 </div>
+                                <button class="btn btn-danger mt-3" name="postCancelation">Cancel
+                                    booking</button>
                             </form>
+                            {{/cancel_reason}}
                         </div>
                     </div>
-                    </div>
+                </div>
             </div>
         </article>
         {{/content.bookingDetails}}
-        {{#content.customersFromBooking.length}}
-        <article id="CustomersInfo">
+        <article id="CustomersInfo" class="mt-3">
             <div class="container">
-
+                <h3>Customers</h3>
                 <table class="table">
                     <thead>
                         <tr>
@@ -116,29 +109,76 @@
                             <th scope="col">Nationality</th>
                             <th scope="col">Email</th>
                             <th scope="col">Phone</th>
+                            <th scope="col">Edit</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {{#.}}
+                        {{# content.customersFromBooking}}
                         <tr>
                             <td>{{customer_id}}</td>
-                            <td>{{title}}</td>
-                            <td>{{firstname}}</td>
-                            <td>{{middlename}}</td>
-                            <td>{{surname}}</td>
-                            <td>{{nationality}}</td>
-                            <td>{{email}}</td>
-                            <td>{{phone}}</td>
+                            <td>{{#title}}{{.}}{{/title}}{{^title}}N/A{{/title}}</td>
+                            <td>{{#
+                                firstname}}{{firstname}}{{/firstname}}{{^firstname}}N/A{{/firstname}}</td>
+                            <td>{{#middlename}}{{.}}{{/middlename}}{{^middlename}}N/A{{/middlename}}</td>
+                            <td>{{#surname}}{{.}}{{/surname}}{{^surname}}N/A{{/surname}}</td>
+                            <td>{{#nationality_text}}{{.}}{{/nationality_text}}{{^nationality_text}}N/A{{/nationality_text}}
+                            </td>
+                            <td>{{#customer_email}}{{.}}{{/customer_email}}{{^customer_email}}N/A{{/customer_email}}
+                            </td>
+                            <td>{{#customer_tel_home}}{{.}}{{/customer_tel_home}}{{^customer_tel_home}}N/A{{/customer_tel_home}}
+                            </td>
+                            <form action="updateCustomer" method="POST">
+                                <input type="hidden" name="postCustomerId" value="{{customer_id}}">
+                                <input type="hidden" name="postChannelId" value="{{content.bookingDetails.channel_id}}">
+                                <input type="hidden" name="postSearchCustomer">
+                                <td><button type="submit" class="btn btn-light">Edit</button></td>
+                            </form>
                         </tr>
-                        {{/.}}
+                        {{/ content.customersFromBooking}}
                     </tbody>
                 </table>
             </div>
         </article>
-        {{/content.customersFromBooking.length}}
+        <article>
+            <div class="container" class="mt-3">
+                <h3>Components</h3>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Id</th>
+                            <th scope="col">Product Id</th>
+                            <th scope="col">Date Id</th>
+                            <th scope="col">Date Type</th>
+                            <th scope="col">Product Code</th>
+                            <th scope="col">Start Date</th>
+                            <th scope="col">End Date</th>
+                            <th scope="col">Rate</th>
+                            <th scope="col">Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{# content.componentsFromBooking}}
+                        <tr>
+                            <td>{{component_id}}</td>
+                            <td>{{#product_id}}{{.}}{{/product_id}}{{^product_id}}N/A{{/product_id}}</td>
+                            <td>{{#
+                                date_id}}{{.}}{{/date_id}}{{^date_id}}N/A{{/date_id}}</td>
+                            <td>{{#date_type}}{{.}}{{/date_type}}{{^date_type}}N/A{{/date_type}}</td>
+                            <td>{{#product_code}}{{.}}{{/product_code}}{{^product_code}}N/A{{/product_code}}</td>
+                            <td>{{#start_date}}{{.}}{{/start_date}}{{^start_date}}N/A{{/start_date}}</td>
+                            <td>{{#end_date}}{{.}}{{/end_date}}{{^end_date}}N/A{{/end_date}}</td>
+                            <td>{{#rate_breakdown}}{{.}}{{/rate_breakdown}}{{^rate_breakdown}}N/A{{/rate_breakdown}}</td>
+                            <td>{{#sale_price}}{{.}}{{sale_currency}}{{/sale_price}}{{^sale_price}}N/A{{/sale_price}}</td>
+                        </tr>
+                        {{/ content.componentsFromBooking}}
+                    </tbody>
+                </table>
+            </div>
+        </article>
 
     </main>
     {{>footer}}
     {{>scripts}}
 </body>
+
 </html
