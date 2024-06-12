@@ -58,19 +58,18 @@ if ($page == 'updateCustomer') {
         $data['content']['customerDetails'] = $reserSys->showCustomer($_POST['postCustomerId'], $_POST['postChannelId']);
     }
 } elseif ($page == 'bookingDetails') {
-    if (isset($_POST['postUpdateCancelation'])) {
-        $cancelation = $reserSys->cancelBooking($_POST['postChannelId'], $_POST['postBookingId'], $_POST['postCancelationReason']);
-        $data['content']['bookingDetails'] = $reserSys->forceShowBookingUpdate($_POST['postChannelId'], $_POST['postBookingId']);
-        generalFormat($data, $data['content']['bookingDetails']);
-    } elseif (isset($_POST['postSearchBooking'])) {
-        try {
-            $data['content']['bookingDetails'] = $reserSys->showBooking($_POST['postChannelId'], $_POST['postBookingId']);
-            $data['content']['bookingDetailsError'] = false;
-            generalFormat($data, $data['content']['bookingDetails']);
-        } catch (Exception $e) {
-            $data['content']['bookingDetailsError'] = $e->getMessage();
+    if (isset($_POST['postSearchBooking'])) {
+        if (isset($_POST['postUpdateCancelation'])) {
+            $cancelation = $reserSys->cancelBooking($_POST['postChannelId'], $_POST['postBookingId'], $_POST['postCancelationReason']);
         }
+        if(isset($_POST['postCreatePayment'])){
+            $payment = $reserSys->createPayment($_POST['postChannelId'], $_POST['postInfoPayment']);
+            }
+        $data['content']['bookingDetails'] = $reserSys->showBooking($_POST['postChannelId'], $_POST['postBookingId']);
+        $data['content']['bookingDetails']['auxBooleanPaymentFulfilled'] =  $data['content']['bookingDetails']['payment_status'] == 3 ? 1 : 0;
+        generalFormat($data, $data['content']['bookingDetails']);
     }
+
 } elseif ($page == 'formCustomers') {
     if (isset($_POST['postCommitBooking'])) {
         $booking = $reserSys->commitBooking($_POST['postChannelId'], $_POST['postRequestedBooking'], $_POST['postRequestBookingAs']);

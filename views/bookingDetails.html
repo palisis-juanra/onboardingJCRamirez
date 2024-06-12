@@ -15,7 +15,7 @@
                     </div>
                     <!-- Lead customer card -->
                     <div class="col-md-3">
-                        <div class="card card-custom card-dark text-center p-3">
+                        <div class="card card-custom text-center p-3">
                             <h5 class="card-title"><i class="icon fas fa-user"></i> Lead
                                 Customer</h5>
                             <p>Name: {{# lead_customer_name }} {{
@@ -37,7 +37,7 @@
                                 lead_customer_email }}{{^
                                 lead_customer_email }}Undefined{{/
                                 lead_customer_email }}</p>
-                            <a href="#" class="btn btn-light mt-3">Make lead
+                            <a href="#" class="btn btn-dark mt-3">Make lead
                                 customer non travelling</a>
                         </div>
                     </div>
@@ -62,13 +62,21 @@
                                 }}</p>
                             <p>Balance: {{ balance_display }} ({{
                                 balance_due }})</p>
+                                {{^ auxBooleanPaymentFulfilled}}
                             <p>Owed by: {{# balance_owed_by }}Lead
                                 customer{{/ balance_owed_by }}{{^
                                 balance_owed_by }}Undefined{{/
                                 balance_owed_by }}</p>
-                            <a href="#" class="btn btn-light mt-3">Add Payment /
-                                Refund</a>
+                            <button data-bs-toggle="modal" data-bs-target="#payment" class="btn btn-dark mt-3">Add
+                                Payment /
+                                Refund</button>
+                            {{/ auxBooleanPaymentFulfilled}}
+                            {{# auxBooleanPaymentFulfilled}}
+                            <p>Payment status: {{ payment_status_text }}</p>
+                            <p></p>
+                            {{/ auxBooleanPaymentFulfilled}}
                         </div>
+                        {{> modalPayment}}
                     </div>
                     <!-- Confirmed card -->
                     <div class="col-md-3">
@@ -83,7 +91,8 @@
                                     <input type="hidden" name="postBookingId" value="{{ booking_id }}">
                                     <input type="hidden" name="postChannelId" value="{{channel_id}}">
                                     <input type="hidden" name="postUpdateCancelation">
-                                    <textarea name="postCancelationReason" rows="3"placeholder='Enter your reason'></textarea>
+                                    <textarea name="postCancelationReason" rows="3"
+                                        placeholder='Enter your reason'></textarea>
                                 </div>
                                 <button class="btn btn-danger mt-3" name="postCancelation">Cancel
                                     booking</button>
@@ -167,8 +176,10 @@
                             <td>{{#product_code}}{{.}}{{/product_code}}{{^product_code}}N/A{{/product_code}}</td>
                             <td>{{#start_date}}{{.}}{{/start_date}}{{^start_date}}N/A{{/start_date}}</td>
                             <td>{{#end_date}}{{.}}{{/end_date}}{{^end_date}}N/A{{/end_date}}</td>
-                            <td>{{#rate_breakdown}}{{.}}{{/rate_breakdown}}{{^rate_breakdown}}N/A{{/rate_breakdown}}</td>
-                            <td>{{#sale_price}}{{.}}{{sale_currency}}{{/sale_price}}{{^sale_price}}N/A{{/sale_price}}</td>
+                            <td>{{#rate_breakdown}}{{.}}{{/rate_breakdown}}{{^rate_breakdown}}N/A{{/rate_breakdown}}
+                            </td>
+                            <td>{{#sale_price}}{{.}}{{sale_currency}}{{/sale_price}}{{^sale_price}}N/A{{/sale_price}}
+                            </td>
                         </tr>
                         {{/ content.componentsFromBooking}}
                     </tbody>
