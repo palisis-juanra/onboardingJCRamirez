@@ -213,7 +213,7 @@ class ReservationSystem
         foreach ($arrayCustomers as $key => $customer) {
             $customerNode = $customers->addChild('customer');
             foreach ($customer as $key => $value) {
-                $customerNode->addChild(trim($key, "'"), $value);
+                $customerNode->addChild($key, $value);
             }
         }
 
@@ -300,26 +300,8 @@ class ReservationSystem
     public function showBooking($channelId, $bookingId)
     {
         $operator = $this->createOperator($channelId);
-        $cacheKey = 'BOOKING_' . $channelId . '_' . $bookingId;
-        if (!$this->redisService->existKey($cacheKey)) {
-            $operator = $this->createOperator($channelId);
-            $bookingDetails = $operator->show_booking($bookingId, $channelId);
-            $formatedbookingDetails = json_encode($bookingDetails,);
-            $this->cacheGeneralJSON($bookingDetails, $cacheKey);
-            return json_decode(html_entity_decode($formatedbookingDetails), true)['booking'];
-        } else {
-            return json_decode(html_entity_decode($this->redisService->getItemFromRedis($cacheKey, RedisService::REDIS_TYPE_STRING)), true)['booking'];
-        }
-    }
-
-    public function forceShowBookingUpdate($channelId, $bookingId)
-    {
-        $operator = $this->createOperator($channelId);
-        $cacheKey = 'BOOKING_' . $channelId . '_' . $bookingId;
-        $operator = $this->createOperator($channelId);
         $bookingDetails = $operator->show_booking($bookingId, $channelId);
         $formatedbookingDetails = json_encode($bookingDetails,);
-        $this->cacheGeneralJSON($bookingDetails, $cacheKey);
         return json_decode(html_entity_decode($formatedbookingDetails), true)['booking'];
     }
 
@@ -366,6 +348,18 @@ class ReservationSystem
             throw new Exception($result->error);
         }
     }
+    public function createPayment($channelId, $paymentData)
+    {
+        $this->listChannels();
+        $operator = $this->createOperator($channelId);
+        $payment = new SimpleXMLElement('<payment />');
+        foreach ($paymentData as $key => $value) {
+            $payment->addChild($key, $value);
+        }
+        $result = $operator->create_payment($payment, $channelId);
+        return $result;
+    }
+
 
     public function setCacheName($cacheName)
     {

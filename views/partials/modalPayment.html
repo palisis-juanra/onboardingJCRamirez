@@ -1,0 +1,58 @@
+<div class="modal fade" id="payment" tabindex="-1" aria-labelledby="paymentLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="paymentLabel">Make a payment or
+                    refund</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="updatePayment" action="bookingDetails" method="POST">
+                    <div class="form-row mt-3 g-3">
+                        <div class="form-group">
+                            <label for="booking_name">Booking Name</label>
+                            <input type="text" class="form-control" id="booking_name"
+                                value="{{booking_name}}" readonly>
+                            <input type="hidden" value="{{booking_id}}" name="postInfoPayment[booking_id]">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="sales_revenue_display">Current Balance</label>
+                        <input type="text" class="form-control" id="sales_revenue_display" value="{{balance_display}}" readonly>
+                    </div>
+                    <div class="form-row mt-3 g-3">
+                        <div class="form-group">
+                            <label for="payment_amount">Payment Amount</label>
+                            <input type="number" class="form-control" id="payment_value" name="postInfoPayment[payment_value]"
+                                step="0.01" min="0" max="{{balance}}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="payment_method">Payment Method</label>
+                            <input type="text" name="postInfoPayment[payment_type]" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="payment_method">Currency</label>
+                            <select class="form-control" id="payment_method" name="postInfoPayment[payment_currency]" required>
+                                <option value="USD" selected>US Dollar (USD)</option>
+                                <option value="EUR">Euros (EUR)</option>
+                                <option value="GBP">British Pound (GBP)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="payment_reference">Reference</label>
+                            <input type="text" class="form-control" id="payment_reference" name="postInfoPayment[payment_reference]">
+                        </div>
+                    </div>
+                    <input type="hidden" name="postCreatePayment">
+                    <input type="hidden" name="postSearchBooking">
+                    <input type="hidden" name="postChannelId" value="{{channel_id}}">
+                    <input type="hidden" name="postBookingId" value="{{booking_id}}">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary" form="updatePayment">Update Payment</button>
+            </div>
+        </div>
+    </div>
+</div>
