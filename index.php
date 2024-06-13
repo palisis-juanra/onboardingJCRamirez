@@ -77,7 +77,12 @@ if ($page == 'updateCustomer') {
         $data['content']['bookingDone'] = true;
         $data['content']['bookingChannel'] = $booking->channel_id;
         $data['content']['bookingId'] = $booking->booking_id;
-    } elseif (isset($_POST['postRequesBooking'])) {
+
+    } elseif (isset($_POST['postDeleteTemporalBooking'])) {
+        $booking = $reserSys->deleteBooking($_POST['postRequestedBooking'], $_POST['postChannelId']);
+        $data['content']['bookingError'] = true;
+
+    }elseif (isset($_POST['postRequesBooking'])) {
         $booking = $reserSys->createTemporalBooking($_POST['postChannelId'], $_POST['postComponentKey'], $_POST['postCustomersArray'], $_POST['postRequestBookingAs']);
         $data['content']['resquestedBooking']['channel_id'] = $_POST['postChannelId'];
         $data['content']['resquestedBooking']['requestBookingAs'] = $_POST['postRequestBookingAs'];
