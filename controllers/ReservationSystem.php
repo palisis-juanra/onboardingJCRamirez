@@ -336,6 +336,11 @@ class ReservationSystem
         return $result->booking;
     }
 
+    public function deleteBooking($bookingId, $channelId)
+    {
+        $result = $this->TourCMSAgent->delete_booking($bookingId, $channelId);
+        return $result->booking;
+    }
 
     public function setCacheName($cacheName)
     {
