@@ -27,10 +27,8 @@ if ($page == 'updateCustomer') {
     if (isset($_POST['postSearchCustomer'])) {
         if (isset($_POST['updateCustomer'])) {
             $reserSys->updateCustomer($_POST['postChannelId'], $_POST['postInfoCustomer']);
-            // error_log(print_r($_POST['postInfoCustomer'], true));
         }
         $data['content']['customerDetails'] = $reserSys->showCustomer($_POST['postCustomerId'], $_POST['postChannelId']);
-        // error_log(print_r($data['content']['customerDetails'], true));
     }
 } elseif ($page == 'bookingDetails') {
     if (isset($_POST['postUpdateCancelation'])) {
@@ -101,16 +99,16 @@ function generalFormat(&$data, $bookingInfo)
 
 function formatCustomers($bookingInfo)
 {
-    $aux_array = ['customer_id', 'firstname', 'middlename', 'surname', 'customer_email', 'customer_tel_home', 'nationality_text'];
+    $customersIndexArray = ['customer_id', 'firstname', 'middlename', 'surname', 'customer_email', 'customer_tel_home', 'nationality_text'];
     $customers = [];
     if (isset($bookingInfo['customers']['customer']['customer_id'])) {
-        foreach ($aux_array as $key) {
+        foreach ($customersIndexArray as $key) {
             $customers[0][$key] = $bookingInfo['customers']['customer'][$key];
         }
     } else {
         foreach ($bookingInfo['customers']['customer'] as $customerFromBooking) {
             $customerAux = [];
-            foreach ($aux_array as $key) {
+            foreach ($customersIndexArray as $key) {
                 $customerAux[$key] = $customerFromBooking[$key];
             }
             $customers[] = $customerAux;
@@ -121,16 +119,16 @@ function formatCustomers($bookingInfo)
 
 function formatComponents($bookingInfo)
 {
-    $aux_array = ['component_id', 'product_id', 'date_id', 'date_type', 'product_code', 'start_date', 'end_date', 'rate_breakdown', 'sale_price', 'sale_currency'];
+    $componentsIndexArray = ['component_id', 'product_id', 'date_id', 'date_type', 'product_code', 'start_date', 'end_date', 'rate_breakdown', 'sale_price', 'sale_currency'];
     $components = [];
     if (isset($bookingInfo['components']['component']['component_id'])) {
-        foreach ($aux_array as $key) {
+        foreach ($componentsIndexArray as $key) {
             $components[0][$key] = $bookingInfo['components']['component'][$key];
         }
     } else {
         foreach ($bookingInfo['components']['component'] as $componentFromBooking) {
             $componentAux = [];
-            foreach ($aux_array as $key) {
+            foreach ($componentsIndexArray as $key) {
                 $componentAux[$key] = $componentFromBooking[$key];
             }
             $components[] = $componentAux;
