@@ -142,7 +142,7 @@ function generalFormat(&$data, $bookingInfo)
 
 function formatCustomers($bookingInfo)
 {
-    $customersIndexArray = ['customer_id', 'firstname', 'middlename', 'surname', 'customer_email', 'customer_tel_home', 'nationality_text'];
+    $customersIndexArray = ['customer_id', 'customer_name', 'title', 'firstname', 'middlename', 'surname', 'customer_email', 'customer_tel_home', 'nationality_text'];
     $customers = [];
     if (isset($bookingInfo['customers']['customer']['customer_id'])) {
         foreach ($customersIndexArray as $key) {

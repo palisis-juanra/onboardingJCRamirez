@@ -91,10 +91,9 @@
                                     <input type="hidden" name="postBookingId" value="{{ booking_id }}">
                                     <input type="hidden" name="postChannelId" value="{{channel_id}}">
                                     <input type="hidden" name="postUpdateCancelation">
-                                    <textarea name="postCancelationReason" rows="3"
-                                        placeholder='Enter your reason'></textarea>
+                                    <textarea name="postCancelationReason" rows="3"placeholder='Enter your reason'></textarea>
                                 </div>
-                                <button class="btn btn-danger mt-3" name="postCancelation">Cancel
+                                <button class="btn btn-danger mt-3" type="submit" name="postSearchBooking">Cancel
                                     booking</button>
                             </form>
                             {{/cancel_reason}}
