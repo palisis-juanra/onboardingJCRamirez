@@ -52,6 +52,7 @@ if ($page != 'login' && (!isset($_SESSION['logged']) || $_SESSION['logged'] != t
 
 if ($page == 'updateCustomer') {
     if (isset($_POST['postSearchCustomer'])) {
+        $reserSys->listChannels();
         if (isset($_POST['updateCustomer'])) {
             $reserSys->updateCustomer($_POST['postChannelId'], $_POST['postInfoCustomer']);
         }
@@ -59,6 +60,7 @@ if ($page == 'updateCustomer') {
     }
 } elseif ($page == 'bookingDetails') {
     if (isset($_POST['postSearchBooking'])) {
+        $reserSys->listChannels();
         if (isset($_POST['postUpdateCancelation'])) {
             $cancelation = $reserSys->cancelBooking($_POST['postChannelId'], $_POST['postBookingId'], $_POST['postCancelationReason']);
         }
@@ -87,6 +89,7 @@ if ($page == 'updateCustomer') {
         }
 
     } elseif (isset($_POST['postRequesBooking'])) {
+        $reserSys->listChannels();
         $booking = $reserSys->createTemporalBooking($_POST['postChannelId'], $_POST['postComponentKey'], $_POST['postCustomersArray'], $_POST['postRequestBookingAs']);
         $data['content']['resquestedBooking']['channel_id'] = $_POST['postChannelId'];
         $data['content']['resquestedBooking']['requestBookingAs'] = $_POST['postRequestBookingAs'];

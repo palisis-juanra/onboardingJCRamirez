@@ -350,7 +350,6 @@ class ReservationSystem
     }
     public function createPayment($channelId, $paymentData)
     {
-        $this->listChannels();
         $operator = $this->createOperator($channelId);
         $payment = new SimpleXMLElement('<payment />');
         foreach ($paymentData as $key => $value) {
