@@ -23,6 +23,8 @@ $reserSys = new ReservationSystem($tourcms, $redis, $expirationTime);
 $templates = new Templates();
 $page = $templates->getPageUrl();
 $data = $templates->getData($page);
+
+$reserSys->checkIfChannelsExists();
 if ($page == 'updateCustomer') {
     if (isset($_POST['postSearchCustomer'])) {
         if (isset($_POST['updateCustomer'])) {
