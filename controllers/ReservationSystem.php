@@ -42,6 +42,13 @@ class ReservationSystem
         }
     }
 
+    public function checkIfChannelsExists()
+    {
+        if(!$this->redisService->existKey(self::$cacheName)){
+            $this->listChannels();
+        }
+    }
+
     public function listTours($channelId)
     {
         $cacheKey = 'TOURS_' . $channelId;
@@ -162,7 +169,6 @@ class ReservationSystem
     public function createTemporalBooking($channel_id, $componentKey, $arrayCustomers, $bookingAs = 'agent')
     {
         // We make sure to have the list of channels and their API keys cached, since otherwise we wouldn't be able to create the Operator
-        $this->listChannels();
 
         if ($bookingAs == 'agent') {
             $tourcmsAmbiguous = $this->TourCMSAgent;
@@ -293,7 +299,6 @@ class ReservationSystem
 
     public function showBooking($channelId, $bookingId)
     {
-        $this->listChannels();
         $operator = $this->createOperator($channelId);
         $cacheKey = 'BOOKING_' . $channelId . '_' . $bookingId;
         if (!$this->redisService->existKey($cacheKey)) {
@@ -309,7 +314,6 @@ class ReservationSystem
 
     public function forceShowBookingUpdate($channelId, $bookingId)
     {
-        $this->listChannels();
         $operator = $this->createOperator($channelId);
         $cacheKey = 'BOOKING_' . $channelId . '_' . $bookingId;
         $operator = $this->createOperator($channelId);
@@ -319,7 +323,7 @@ class ReservationSystem
         return json_decode(html_entity_decode($formatedbookingDetails), true)['booking'];
     }
 
-    public function cancelBooking($channelId, $bookingId)
+    public function cancelBooking($channelId, $bookingId, $note = 'Booking cancelled')
     {
         $tourCMSOperator = $this->createOperator($channelId);
         $booking = new SimpleXMLElement('<booking />');
@@ -328,13 +332,14 @@ class ReservationSystem
         $booking->addChild('booking_id', $bookingId);
 
         // Optionally add a note explaining why the booking is cancelled
-        $booking->addChild('note', 'Booking created accidentally');
+        $booking->addChild('note', $note);
 
         // Call TourCMS API, cancelling the booking
         $result = $tourCMSOperator->cancel_booking($booking, $channelId);
 
         return $result->booking;
     }
+
 
     public function deleteBooking($bookingId, $channelId)
     {
@@ -344,6 +349,25 @@ class ReservationSystem
         {
             throw new Exception($result->error);
         }
+    }
+
+    public function showCustomer($customerId, $channelId)
+    {
+        $operator = $this->createOperator($channelId);
+        $customerDetails = $operator->show_customer($customerId, $channelId);
+        return $customerDetails;
+
+    }
+
+    public function updateCustomer($channelId, $customerData)
+    {
+        $operator = $this->createOperator($channelId);
+        $customer = new SimpleXMLElement('<customer />');
+        foreach ($customerData as $key => $value) {
+            $customer->addChild($key, $value);
+        }
+        $result = $operator->update_customer($customer, $channelId);
+        return $result;
     }
 
     public function setCacheName($cacheName)
