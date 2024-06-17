@@ -340,7 +340,6 @@ class ReservationSystem
     {
         $tourCMSOperator = $this->createOperator($channelId);
         $result = $tourCMSOperator->delete_booking($bookingId, $channelId);
-        error_log(print_r($result, true) . 'deleteBooking');
         if($result->error != 'OK')
         {
             throw new Exception($result->error);
