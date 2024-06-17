@@ -108,12 +108,27 @@
         </div>
         {{/ content.bookingDone}}
 
+        {{# content.bookingDeleted}}
+        <div class="container d-flex justify-content-center align-items-center vh-50">
+            <div class="card p-4">
+                <div class="card-body text-center">
+                    <h2 class="card-title
+                    text-danger">Booking Deleted</h2>
+                    <h3 class="card-subtitle mt-1 text-muted">
+                        <a href="../index.php" >Redirect to main page</a>
+                    </h3>
+                </div>
+            </div>
+        </div>
+        {{/ content.bookingDeleted}}
+
         {{# content.bookingError}}
         <div class="container d-flex justify-content-center align-items-center vh-50">
             <div class="card p-4">
                 <div class="card-body text-center">
                     <h2 class="card-title
                     text-danger">Booking Error</h2>
+                    <h3 class="card-subtitle mt-1 text-muted">{{content.bookingErrorMessage}}</h3>
                     <h3 class="card-subtitle mt-1 text-muted">
                         <a href="../index.php" >Redirect to main page</a>
                     </h3>
