@@ -89,7 +89,6 @@ if ($page == 'updateCustomer') {
         }
 
     } elseif (isset($_POST['postRequesBooking'])) {
-        $reserSys->listChannels();
         $booking = $reserSys->createTemporalBooking($_POST['postChannelId'], $_POST['postComponentKey'], $_POST['postCustomersArray'], $_POST['postRequestBookingAs']);
         $data['content']['resquestedBooking']['channel_id'] = $_POST['postChannelId'];
         $data['content']['resquestedBooking']['requestBookingAs'] = $_POST['postRequestBookingAs'];
