@@ -18,13 +18,35 @@ $tourcms = new TourCMSextension($MARKETPLACE_ID, $AGENT_API_KEY, 'simplexml', $T
 $tourcms->set_base_url($BASE_URL);
 $expirationTime = time() + 600;
 
+session_start();
 
 $reserSys = new ReservationSystem($tourcms, $redis, $expirationTime);
 $templates = new Templates();
 $page = $templates->getPageUrl();
 $data = $templates->getData($page);
 
-$reserSys->checkIfChannelsExists();
+if (isset($_GET['username']) && isset($_GET['password'])) {
+    $xml = $templates->getXMLFromValidation($SCRIPT_LOGIN, $_GET);
+    if($xml->error == 'OK') {
+        $_SESSION['username'] = $_GET['username'];
+        $_SESSION['logged'] = true;
+    } 
+}
+if (isset($_POST['logout'])) {
+    session_start();
+    session_destroy();
+    header('Location: ' . $templates->getIndex() . '/login');
+}
+
+if($page != 'login' && (!isset($_SESSION['logged']) || $_SESSION['logged'] != true)){
+    error_log(print_r($_SESSION, true));
+    header('Location: ' . $templates->getIndex() . '/login');
+}
+else if($page == 'login' && isset($_SESSION['logged']) && $_SESSION['logged'] != true) {
+    header('Location: ' . $templates->getIndex());
+    $reserSys->checkIfChannelsExists();
+}
+
 if ($page == 'updateCustomer') {
     if (isset($_POST['postSearchCustomer'])) {
         if (isset($_POST['updateCustomer'])) {
@@ -38,8 +60,13 @@ if ($page == 'updateCustomer') {
         $data['content']['bookingDetails'] = $reserSys->forceShowBookingUpdate($_POST['postChannelId'], $_POST['postBookingId']);
         generalFormat($data, $data['content']['bookingDetails']);
     } elseif (isset($_POST['postSearchBooking'])) {
-        $data['content']['bookingDetails'] = $reserSys->showBooking($_POST['postChannelId'], $_POST['postBookingId']);
-        generalFormat($data, $data['content']['bookingDetails']);
+        try{
+            $data['content']['bookingDetails'] = $reserSys->showBooking($_POST['postChannelId'], $_POST['postBookingId']);
+            $data['content']['bookingDetailsError'] = false;
+            generalFormat($data, $data['content']['bookingDetails']);
+        } catch (Exception $e) {
+            $data['content']['bookingDetailsError'] = $e->getMessage();
+        }
     }
 } elseif ($page == 'formCustomers') {
     if (isset($_POST['postCommitBooking'])) {
@@ -84,7 +111,9 @@ if ($page == 'updateCustomer') {
 } elseif ($page == 'channels') {
     $channels = new ArrayIterator($reserSys->listChannels());
     $data['content']['channels'] = $channels;
-}
+} 
+
+
 
 try {
     echo $templates->render($page, $data);

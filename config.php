@@ -15,3 +15,4 @@ $AGENT_API_KEY = "ccadca970eea";
 $TIMEOUT = 0;
 $BASE_URL = 'http://api.tourcms.local';
 $MARKETPLACE_ID_FOR_OPERATOR = 0;
+$SCRIPT_LOGIN = 'http://localhost/admin.tourcms.com/partner/api_login_new.php';
