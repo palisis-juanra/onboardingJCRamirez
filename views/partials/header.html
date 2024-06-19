@@ -10,6 +10,10 @@
             {{# links }}
             <li class="nav-item"><a href="{{url}}" class="nav-link">{{text}}</a></li>
             {{/ links}}
+            <form action="{{home}}" method="POST">
+                <input type="hidden" name="logout" value="true">
+                <input type="submit" class="btn btn-danger" value="Logout" name="logout">
+            </form>
         </ul>
         {{/nav.header}}
         <form action="bookingDetails"></form>

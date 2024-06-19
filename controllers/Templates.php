@@ -31,13 +31,14 @@ class Templates
 
     public function getPageUrl()
     {
+       
         $url = explode('?', $_SERVER['REQUEST_URI']);
         $url = explode('/', $url[0]);
         $page = $url[count($url) - 1];
         return ($page == 'index.php') ? 'channels' : $page;
     }
 
-    private function getIndex()
+    public function getIndex()
     {
         $final = '';
         $url = explode('?', $_SERVER['REQUEST_URI']);
@@ -50,6 +51,39 @@ class Templates
             $final .= '/' . $url[$i];
         }
         return ($final);
+    }
+
+
+    function getXMLFromValidation($url, $paramsFromGet) {
+
+        $url .= '?' . http_build_query($paramsFromGet);
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    
+        $response = curl_exec($ch);
+    
+        // Handle any errors
+        if (curl_errno($ch)) {
+            echo 'Curl error: ' . curl_error($ch);
+            curl_close($ch);
+            return null;
+        }
+
+        curl_close($ch);
+    
+        //Loads the XML response into a SimpleXMLElement object
+        $xml = simplexml_load_string($response);
+        if ($xml === false) {
+            echo "Failed loading XML\n";
+            foreach (libxml_get_errors() as $error) {
+                echo "\t", $error->message;
+            }
+            return null;
+        }
+    
+        return $xml;
     }
 
     public function getData($page)
@@ -99,6 +133,13 @@ class Templates
                     'body' => 'This is the update customer page'
                 ];
                 break;
+            case 'login':
+                $data['content'] = [
+                    'title' => 'Login',
+                    'heading' => 'Login',
+                    'body' => 'This is the login page'
+                ];
+                break;
             case 'about':
                 $data['content'] = [
                     'title' => 'About',
@@ -116,4 +157,6 @@ class Templates
         }
         return $data;
     }
+
+
 }
