@@ -27,22 +27,22 @@ $data = $templates->getData($page);
 
 if (isset($_GET['username']) && isset($_GET['password'])) {
     $xml = $templates->getXMLFromValidation($SCRIPT_LOGIN, $_GET);
-    if($xml->error == 'OK') {
+    if ($xml->error == 'OK') {
         $_SESSION['username'] = $_GET['username'];
         $_SESSION['logged'] = true;
-    } 
+    }
 }
+
 if (isset($_POST['logout'])) {
     session_start();
     session_destroy();
     header('Location: ' . $templates->getIndex() . '/login');
 }
 
-if($page != 'login' && (!isset($_SESSION['logged']) || $_SESSION['logged'] != true)){
+if ($page != 'login' && (!isset($_SESSION['logged']) || $_SESSION['logged'] != true)) {
     error_log(print_r($_SESSION, true));
     header('Location: ' . $templates->getIndex() . '/login');
-}
-else if($page == 'login' && isset($_SESSION['logged']) && $_SESSION['logged'] != true) {
+} else if ($page == 'login' && isset($_SESSION['logged']) && $_SESSION['logged'] != true) {
     header('Location: ' . $templates->getIndex());
     $reserSys->checkIfChannelsExists();
 }
@@ -60,7 +60,7 @@ if ($page == 'updateCustomer') {
         $data['content']['bookingDetails'] = $reserSys->forceShowBookingUpdate($_POST['postChannelId'], $_POST['postBookingId']);
         generalFormat($data, $data['content']['bookingDetails']);
     } elseif (isset($_POST['postSearchBooking'])) {
-        try{
+        try {
             $data['content']['bookingDetails'] = $reserSys->showBooking($_POST['postChannelId'], $_POST['postBookingId']);
             $data['content']['bookingDetailsError'] = false;
             generalFormat($data, $data['content']['bookingDetails']);
@@ -111,7 +111,7 @@ if ($page == 'updateCustomer') {
 } elseif ($page == 'channels') {
     $channels = new ArrayIterator($reserSys->listChannels());
     $data['content']['channels'] = $channels;
-} 
+}
 
 
 
