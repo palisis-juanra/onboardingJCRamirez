@@ -44,7 +44,7 @@ class ReservationSystem
 
     public function checkIfChannelsExists()
     {
-        if(!$this->redisService->existKey(self::$cacheName)){
+        if (!$this->redisService->existKey(self::$cacheName)) {
             $this->listChannels();
         }
     }
@@ -345,7 +345,6 @@ class ReservationSystem
         $operator = $this->createOperator($channelId);
         $customerDetails = $operator->show_customer($customerId, $channelId);
         return $customerDetails;
-
     }
 
     public function updateCustomer($channelId, $customerData)
@@ -363,8 +362,7 @@ class ReservationSystem
     {
         $tourCMSOperator = $this->createOperator($channelId);
         $result = $tourCMSOperator->delete_booking($bookingId, $channelId);
-        if($result->error != 'OK')
-        {
+        if ($result->error != 'OK') {
             throw new Exception($result->error);
         }
     }
