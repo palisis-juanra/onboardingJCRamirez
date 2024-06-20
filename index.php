@@ -52,7 +52,6 @@ if ($page != 'login' && (!isset($_SESSION['logged']) || $_SESSION['logged'] != t
 
 if ($page == 'updateCustomer') {
     if (isset($_POST['postSearchCustomer'])) {
-        $reserSys->listChannels();
         if (isset($_POST['updateCustomer'])) {
             $reserSys->updateCustomer($_POST['postChannelId'], $_POST['postInfoCustomer']);
         }
@@ -60,7 +59,6 @@ if ($page == 'updateCustomer') {
     }
 } elseif ($page == 'bookingDetails') {
     if (isset($_POST['postSearchBooking'])) {
-        $reserSys->listChannels();
         if (isset($_POST['postUpdateCancelation'])) {
             $cancelation = $reserSys->cancelBooking($_POST['postChannelId'], $_POST['postBookingId'], $_POST['postCancelationReason']);
         }
