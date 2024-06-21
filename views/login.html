@@ -1,0 +1,34 @@
+{{> head}}
+
+<body>
+    {{> header}}
+    <main>
+        <div class="container-fluid full-height d-flex justify-content-center align-items-center">
+            <div class="row w-75">
+                <div class="col-md-6">
+                    <img src="https://images.ecestaticos.com/hfGE8eyl6ZLdAnxitOPOPtuCLlM=/0x0:2121x1414/1200x900/filters:fill(white):format(jpg)/f.elconfidencial.com%2Foriginal%2F47e%2F9eb%2F77d%2F47e9eb77d0fefdfeee960de4ba13aeb8.jpg" alt="Login Image" class="img-fluid">
+                </div>
+                <div class="col-md-6">
+                    <h2>Login</h2>
+                    <form action="../index.php" method="GET">
+                        <div class="form-group">
+                            <label for="username">Username</label>
+                            <input type="text" class="form-control" id="username" placeholder="Enter username" name="username">
+                        </div>
+                        <div class="form-group mb-4">
+                            <label for="password">Password</label>
+                            <input type="password" class="form-control" id="password" placeholder="Enter password" name="password">
+                        </div>
+                        <input type="hidden" name="Login">
+                        <button type="submit" class="btn btn-primary">Login</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </main>
+    {{> scripts}}
+    {{> footer}}
+</body>
+
+</html>

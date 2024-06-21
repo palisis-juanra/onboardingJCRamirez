@@ -13,36 +13,36 @@
                         <div class="mb-1 form-group ">
                             <label for="title" class="form-label">Title
                                 <input type="text" class="form-control" value=""
-                                    name="postCustomersArray['customer_{{.}}']['title']">
+                                    name="postCustomersArray[customer_{{.}}][title]">
                             </label>
                         </div>
                         <div class="mb-1 form-group ">
                             <label for="first_name" class="form-label">First Name
                                 <input type="text" class="form-control" value=""
-                                    name="postCustomersArray['customer_{{.}}']['firstname']">
+                                    name="postCustomersArray[customer_{{.}}][firstname]">
                             </label>
                         </div>
                     </div>
                     <div class="mb-1 form-group">
                         <label for="last_name" class="form-label">Last Name
                             <input type="text" class="form-control" value=""
-                                name="postCustomersArray['customer_{{.}}']['surname']">
+                                name="postCustomersArray[customer_{{.}}][surname]">
                         </label>
                     </div>
                     <div class="form-row d-flex">
 
-                    <div class="mb-1 form-group">
-                        <label for="email" class="form-label">Email
-                            <input type="email" class="form-control" value=""
-                                name="postCustomersArray['customer_{{.}}']['email']">
-                        </label>
-                    </div>
-                    <div class="mb-1 form-group ">
-                        <label for="phone" class="form-label">Phone
-                            <input type="tel" class="form-control" value=""
-                                name="postCustomersArray['customer_{{.}}']['tel_home']">
-                        </label>
-                    </div>
+                        <div class="mb-1 form-group">
+                            <label for="email" class="form-label">Email
+                                <input type="email" class="form-control" value=""
+                                    name="postCustomersArray[customer_{{.}}][email]">
+                            </label>
+                        </div>
+                        <div class="mb-1 form-group ">
+                            <label for="phone" class="form-label">Phone
+                                <input type="tel" class="form-control" value=""
+                                    name="postCustomersArray[customer_{{.}}][tel_home]">
+                            </label>
+                        </div>
                     </div>
                     <div class="form-row d-flex">
                         <div class="mb-1 form-group ">
@@ -51,7 +51,13 @@
                                     name="postCustomersArray['customer_{{.}}']['postcode']">
                             </label>
                         </div>
-                        {{> inputSelectCountries}}
+                        <div class=" form-group col-md-1">
+                            <label>Country
+                                <select name="postCustomersArray[customer_{{.}}][nationality]" class="form-select">
+                                    {{> inputSelectCountries}}
+                                </select>
+                            </label>
+                        </div>
                     </div>
                 </div>
                 {{/ customers}}
@@ -72,13 +78,22 @@
                 <div class="card-body text-center">
                     <h2 class="card-title">Booking Requested</h2>
                     <h3 class="card-subtitle mb-2 text-muted">Booking ID: {{resquestedBookingResponse.booking_id}}</h3>
-                    <h3 class="card-subtitle mb-4 text-muted">Booking Total: {{resquestedBookingResponse.sales_revenue}} {{resquestedBookingResponse.sale_currency}}</h3>
+                    <h3 class="card-subtitle mb-4 text-muted">Booking Total: {{resquestedBookingResponse.sales_revenue}}
+                        {{resquestedBookingResponse.sale_currency}}</h3>
                     <form action="formCustomers" method="POST">
                         <input type="hidden" value="{{channel_id}}" name="postChannelId">
                         <input type="hidden" name="postRequestBookingAs" value="{{requestBookingAs}}">
-                        <input type="hidden" name="postRequestedBooking" value="{{resquestedBookingResponse.booking_id}}">
+                        <input type="hidden" name="postRequestedBooking"
+                            value="{{resquestedBookingResponse.booking_id}}">
                         <input type="hidden" name="postCommitBooking">
                         <button type="submit" class="btn btn-primary">Commit Booking</button>
+                    </form>
+                    <form action="formCustomers" method="POST"
+                    class="mt-3">
+                        <input type="hidden" value="{{channel_id}}" name="postChannelId">
+                        <input type="hidden" name="postRequestedBooking" value="{{resquestedBookingResponse.booking_id}}">
+                        <input type="hidden" name="postDeleteTemporalBooking">
+                        <button type="submit" class="btn btn-danger">Delete Booking</button>  
                     </form>
                 </div>
             </div>
@@ -94,12 +109,42 @@
                     <h3 class="card-subtitle mb-2 text-muted">Booking ID: {{content.bookingId}}</h3>
                     <h3 class="card-subtitle mb-4 text-muted">Booking Channel: {{content.bookingChannel}}</h3>
                     <h3 class="card-subtitle mt-1 text-muted">
-                        <a href="../index.php" >Redirect to main page</a>
+                        <a href="../index.php">Redirect to main page</a>
                     </h3>
                 </div>
             </div>
         </div>
         {{/ content.bookingDone}}
+
+        {{# content.bookingDeleted}}
+        <div class="container d-flex justify-content-center align-items-center vh-50">
+            <div class="card p-4">
+                <div class="card-body text-center">
+                    <h2 class="card-title
+                    text-danger">Booking Deleted</h2>
+                    <h3 class="card-subtitle mt-1 text-muted">
+                        <a href="../index.php" >Redirect to main page</a>
+                    </h3>
+                </div>
+            </div>
+        </div>
+        {{/ content.bookingDeleted}}
+
+        {{# content.bookingError}}
+        <div class="container d-flex justify-content-center align-items-center vh-50">
+            <div class="card p-4">
+                <div class="card-body text-center">
+                    <h2 class="card-title
+                    text-danger">Booking Error</h2>
+                    <h3 class="card-subtitle mt-1 text-muted">{{content.bookingErrorMessage}}</h3>
+                    <h3 class="card-subtitle mt-1 text-muted">
+                        <a href="../index.php">Redirect to main page</a>
+                    </h3>
+                </div>
+            </div>
+        </div>
+        {{/ content.bookingError}}
+
     </main>
 
     {{> scripts}}

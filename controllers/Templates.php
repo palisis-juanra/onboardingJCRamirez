@@ -37,7 +37,7 @@ class Templates
         return ($page == 'index.php') ? 'channels' : $page;
     }
 
-    private function getIndex()
+    public function getIndex()
     {
         $final = '';
         $url = explode('?', $_SERVER['REQUEST_URI']);
@@ -90,6 +90,20 @@ class Templates
                     'title' => 'Booking Details',
                     'heading' => 'Booking Details',
                     'body' => 'This is the booking details page'
+                ];
+                break;
+            case 'updateCustomer':
+                $data['content'] = [
+                    'title' => 'Update Customer',
+                    'heading' => 'Update Customer',
+                    'body' => 'This is the update customer page'
+                ];
+                break;
+            case 'login':
+                $data['content'] = [
+                    'title' => 'Login',
+                    'heading' => 'Login',
+                    'body' => 'This is the login page'
                 ];
                 break;
             case 'about':
