@@ -59,6 +59,7 @@ if ($page == 'updateCustomer') {
     }
 } elseif ($page == 'bookingDetails') {
     if (isset($_POST['postSearchBooking'])) {
+        $paymentCompleted = 3; // value comming from api. goes from 1 to 4
         if (isset($_POST['postUpdateCancelation'])) {
             $cancelation = $reserSys->cancelBooking($_POST['postChannelId'], $_POST['postBookingId'], $_POST['postCancelationReason']);
         }
@@ -66,7 +67,7 @@ if ($page == 'updateCustomer') {
             $payment = $reserSys->createPayment($_POST['postChannelId'], $_POST['postInfoPayment']);
             }
         $data['content']['bookingDetails'] = $reserSys->showBooking($_POST['postChannelId'], $_POST['postBookingId']);
-        $data['content']['bookingDetails']['auxBooleanPaymentFulfilled'] =  $data['content']['bookingDetails']['payment_status'] == 3 ? 1 : 0;
+        $data['content']['bookingDetails']['auxBooleanPaymentFulfilled'] =  $data['content']['bookingDetails']['payment_status'] == $paymentCompleted ? true : false;
         generalFormat($data, $data['content']['bookingDetails']);
     }
 
