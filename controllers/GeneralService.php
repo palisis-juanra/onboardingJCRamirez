@@ -2,7 +2,7 @@
 
 class GeneralService
 {
-    function getXMLFromValidation($url, $paramsFromGet)
+    public function getCredentialsForOperator($url, $paramsFromGet)
     {
 
         $url .= '?' . http_build_query($paramsFromGet);
