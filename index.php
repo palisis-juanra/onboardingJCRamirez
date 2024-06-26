@@ -213,12 +213,10 @@ function buildingArrayForCart($post){
     $array[$post['postChannelId']]['dataPerChannel'] = empty($array[$post['postChannelId']]['dataPerChannel'])? new ArrayIterator(): $array[$post['postChannelId']]['dataPerChannel'];
     $array[$post['postChannelId']]['dataPerChannel'][] = $post;
     $array[$post['postChannelId']]['channelId'] = $post['postChannelId'];
-    error_log(print_r($array, true));
     return $array;
 }
 
 function removeComponentFromCart(&$array, $channelId, $componentId){
-    error_log(print_r($_SESSION['bookingComponents'], true));
     foreach ($array as $key => $channel) { 
         foreach ($channel['dataPerChannel'] as $key2 => $component) { 
             if($component['postComponentKey'] == $componentId && $channel['channelId'] == $channelId){

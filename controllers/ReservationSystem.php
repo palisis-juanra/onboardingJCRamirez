@@ -227,7 +227,6 @@ class ReservationSystem
         // Query the TourCMS API, creating the booking
         $result = $tourcmsAmbiguous->start_new_booking($booking, $channelId);
         $bkg = $result->booking;
-        error_log(json_encode($bkg));
         return $bkg;
     }
 
