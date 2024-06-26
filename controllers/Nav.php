@@ -1,12 +1,14 @@
 <?php
 class Nav{
 
-    public function header($relativeUrl = ''){
+    public function header($relativeUrl = '', $amountComponents = 0){
         $header = [
             'links' => [
                 ['url' => $relativeUrl, 'text' => 'List of Channels', 'active' => 'active'],
                 ['url' => $relativeUrl.'/tours', 'text' => 'Tours', 'active' => 'active'],
-                ['url' => $relativeUrl.'/about', 'text' => 'About', 'active' => 'active']
+                ['url' => $relativeUrl.'/about', 'text' => 'About', 'active' => 'active'],
+                ['url' => $relativeUrl.'/bookingManager', 'text' => 'Cart (' . $amountComponents. ')', 'active' => 'active']
+
             ],
             'logo' => 'https://media.licdn.com/dms/image/D4E0BAQGjUrt29N2Wfw/company-logo_200_200/0/1701772945232/palisis_ag_logo?e=2147483647&v=beta&t=6zPWDs4ZHt4AoRb6gJZmaNRbhvkivy-YAgD6hLp2LYs',
             'home' => $relativeUrl,

@@ -19,14 +19,6 @@
                     <label class="form-label mb-1" for="datePicked">Select a date</label>
                     <input type="date" id="datePicked" name="postQuery[date]" class="form-control mb-2" required>
                 </div>
-                <div class="col-md-6">
-                    <label for="chosenAgent">Agent</label>
-                    <input type="radio" name="postBookingAs" id="chosenAgent" value="agent"><br>
-                    <label for="chosenOperator">Operator</label>
-                    <input type="radio" name="postBookingAs" id="chosenOperator" value="operator" checked="true"><br>
-                    <label for="chosenOperatorAsAgent">Operator as agent</label>
-                    <input type="radio" name="postBookingAs" id="chosenOperatorAsAgent" value="operatorAsAgent"><br><br>
-                </div>
                 <input type="hidden" name="postTourId" value="{{ singleTour.tour.tour_id }}">
                 <input type="hidden" name="postChannelId" value="{{ singleTour.tour.channel_id }}">
                 <input type="hidden" name="postCheckAvailability">
@@ -51,7 +43,6 @@
                                     <input type="hidden" name="postTourId" value="{{availability.tour_id}}">
                                     <input type="hidden" name="postComponentKey" value="{{component_key}}">
                                     <input type="hidden" name="postTotalAmountCustomers" value="{{availability.totalAmountOfCustomers}}">
-                                    <input type="hidden" name="postBookingAs" value="{{availability.bookingAs}}">
                                 </form> 
                                 <tr>
                                     <td>
@@ -66,7 +57,7 @@
                                         {{/ price_breakdown.price_row}}
                                     </td>
                                     <td>
-                                        <button type="submit" class="btn btn-primary mb-1" form="goToCustomerForm_{{component_key}}">Select</button>
+                                        <button type="submit" class="btn btn-primary mb-1" name="postShowCustomerForms" form="goToCustomerForm_{{component_key}}">Select</button>
                                     </td>
                                 </tr>
                                 {{/ component}}

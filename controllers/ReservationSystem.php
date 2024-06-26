@@ -166,7 +166,7 @@ class ReservationSystem
         return $availability;
     }
 
-    public function createTemporalBooking($channel_id, $componentKey, $arrayCustomers, $bookingAs = 'agent')
+    public function createTemporalBooking($channelId, $channelData, $bookingAs = 'agent')
     {
         // We make sure to have the list of channels and their API keys cached, since otherwise we wouldn't be able to create the Operator
 
@@ -174,18 +174,22 @@ class ReservationSystem
             $tourcmsAmbiguous = $this->TourCMSAgent;
             $bookingKey = null;
         } elseif ($bookingAs == 'operator') {
-            $tourcmsAmbiguous = $this->createOperator($channel_id);
+            $tourcmsAmbiguous = $this->createOperator($channelId);
             // Here you can use the operator api_key by using $this->requestBookingKeyForOperator but since the API supports the use 'NO_AGENT' as a booking key, we'll use it
             $bookingKey = 'NO_AGENT';
         } else {
-            $tourcmsAmbiguous = $this->createOperator($channel_id);
-            $bookingKey = $this->requestBookingKeyForOperatorAsAgent($tourcmsAmbiguous, $channel_id);
+            $tourcmsAmbiguous = $this->createOperator($channelId);
+            $bookingKey = $this->requestBookingKeyForOperatorAsAgent($tourcmsAmbiguous, $channelId);
         }
 
         $booking = new SimpleXMLElement('<booking />');
 
+        $totalCustomers = 0;
+        foreach ($channelData['dataPerChannel'] as $value) {
+            $totalCustomers = $value['postTotalNumberCustomers'] >= $totalCustomers ? $value['postTotalNumberCustomers'] : $totalCustomers;
+        }
         // Append the total customers, we'll add their details on below
-        $booking->addChild('total_customers', count($arrayCustomers));
+        $booking->addChild('total_customers', $totalCustomers);
 
         // If we're calling the API as a Tour Operator we need to add a Booking Key
         // otherwise skip this
@@ -196,31 +200,34 @@ class ReservationSystem
 
         // Append a container for the components to be booked
         $components = $booking->addChild('components');
-
-        // Add a component node for each item to add to the booking
-        $component = $components->addChild('component');
-
-        // "Component key" obtained via call to "Check availability"
-        $component->addChild('component_key', $componentKey);
-
         // Append a container for the customer recrds
         $customers = $booking->addChild('customers');
 
-        // Optionally append the customer details
-        // Either add their details (as here)
-        // OR an existing customer_id
-        // OR leave blank and TourCMS will create a blank customer
-        foreach ($arrayCustomers as $key => $customer) {
-            $customerNode = $customers->addChild('customer');
-            foreach ($customer as $key => $value) {
-                $customerNode->addChild($key, $value);
+        // Add a component node for each item to add to the booking
+        foreach ($channelData['dataPerChannel'] as $value) {
+
+            $component = $components->addChild('component');
+            // // "Component key" obtained via call to "Check availability"
+            $component->addChild('component_key', $value['postComponentKey']);
+
+            // Optionally append the customer details
+            // Either add their details (as here)
+            // OR an existing customer_id
+            // OR leave blank and TourCMS will create a blank customer
+            if ($value['postTotalNumberCustomers'] = $totalCustomers) {
+                foreach ($value['postCustomersArray'] as $key => $customer) {
+                    $customerNode = $customers->addChild('customer');
+                    foreach ($customer as $key => $value) {
+                        $customerNode->addChild($key, $value);
+                    }
+                }
             }
         }
 
         // Query the TourCMS API, creating the booking
-
-        $result = $tourcmsAmbiguous->start_new_booking($booking, $channel_id);
+        $result = $tourcmsAmbiguous->start_new_booking($booking, $channelId);
         $bkg = $result->booking;
+        error_log(json_encode($bkg));
         return $bkg;
     }
 
