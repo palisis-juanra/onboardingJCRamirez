@@ -12,31 +12,34 @@ use onboarding\services\RedisService;
 //use PhpParser\Node\Expr\Cast;
 //use PhpParser\Node\Expr\Print_;
 
-
-$redis = new RedisService($REDIS_HOST, $REDIS_PORT, $REDIS_PASSWORD);
-$tourcms = new TourCMSextension($MARKETPLACE_ID, $AGENT_API_KEY, 'simplexml', $TIMEOUT);
-$tourcms->set_base_url($BASE_URL);
-$expirationTime = time() + 600;
-
 session_start();
+$redis = new RedisService($REDIS_HOST, $REDIS_PORT, $REDIS_PASSWORD);
+$expirationTime = time() + 600;
+$genService = new GeneralService($redis, $expirationTime);
 
-$reserSys = new ReservationSystem($tourcms, $redis, $expirationTime);
-$templates = new Templates();
-$genService = new GeneralService();
-$page = $templates->getPageUrl();
-$data = $templates->getData($page);
 
-if (isset($_GET['username']) && isset($_GET['password'])) {
+if (isset($_POST['username']) && isset($_POST['password'])) {
     try {
-        $xml = $genService->getXMLFromValidation($SCRIPT_LOGIN, $_GET);
+        $xml = $genService->getXMLForAgent($SCRIPT_LOGIN_AGENT, $_POST);
         if ($xml->error == 'OK') {
-            $_SESSION['username'] = $_GET['username'];
+            $_SESSION['username'] = $_POST['username'];
             $_SESSION['logged'] = true;
+            $genService->cacheApiKeyAgent($xml->channel[0]->private_key);
         }
     } catch (Exception $e) {
         $_SESSION['logged'] = false;
     }
 }
+
+if ($genService->checkApiKeyExists()) {
+    $tourcms = new TourCMSextension($MARKETPLACE_ID, $genService->getApiKeyAgent(), 'simplexml', $TIMEOUT);
+    $tourcms->set_base_url($BASE_URL);
+    $reserSys = new ReservationSystem($tourcms, $redis, $expirationTime);
+}
+
+$templates = new Templates();
+$page = $templates->getPageUrl();
+$data = $templates->getData($page);
 
 if (isset($_POST['logout'])) {
     session_destroy();
