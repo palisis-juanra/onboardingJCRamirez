@@ -12,35 +12,36 @@ use onboarding\services\RedisService;
 //use PhpParser\Node\Expr\Cast;
 //use PhpParser\Node\Expr\Print_;
 
-
-$redis = new RedisService($REDIS_HOST, $REDIS_PORT, $REDIS_PASSWORD);
-$tourcms = new TourCMSextension($MARKETPLACE_ID, $AGENT_API_KEY, 'simplexml', $TIMEOUT);
-$tourcms->set_base_url($BASE_URL);
-$expirationTime = time() + 600;
-
 session_start();
+$redis = new RedisService($REDIS_HOST, $REDIS_PORT, $REDIS_PASSWORD);
+$expirationTime = time() + 600;
+$genService = new GeneralService($redis);
 
 
-$reserSys = new ReservationSystem($tourcms, $redis, $expirationTime);
-$templates = new Templates();
-$genService = new GeneralService();
-$page = $templates->getPageUrl();
-$data = $templates->getData($page, isset($_SESSION['bookingComponents']) ? countTotalAmountComponents($_SESSION['bookingComponents']): 0);
-
-
-if (isset($_GET['username']) && isset($_GET['password'])) {
+if (isset($_POST['username']) && isset($_POST['password'])) {
     try {
-        $xml = $genService->getCredentialsForOperator($SCRIPT_LOGIN, $_GET);
+        $xml = $genService->curlPostRequest($SCRIPT_LOGIN_AGENT, $_POST);
         if ($xml->error == 'OK') {
-            $_SESSION['username'] = $_GET['username'];
+            $_SESSION['username'] = $_POST['username'];
             $_SESSION['logged'] = true;
             $_SESSION['bookingComponents'] = [];
+            $genService->cacheApiKeyAgent($xml->channel[0]->private_key);
         }
     } catch (Exception $e) {
         $_SESSION['logged'] = false;
 
     }
 }
+if ($genService->getApiKeyAgent() && isset($_SESSION['logged']) && $_SESSION['logged'] == true) {
+    $tourcms = new TourCMSextension($MARKETPLACE_ID, $genService->getApiKeyAgent(), 'simplexml', $TIMEOUT);
+    $tourcms->set_base_url($BASE_URL);
+    
+    $reserSys = new ReservationSystem($tourcms, $redis, $expirationTime);
+}
+
+$templates = new Templates();
+$page = $templates->getPageUrl();
+$data = $templates->getData($page, isset($_SESSION['bookingComponents']) ? countTotalAmountComponents($_SESSION['bookingComponents']): 0);
 
 if (isset($_POST['logout'])) {
     session_destroy();
@@ -52,7 +53,7 @@ if ($page != 'login' && (!isset($_SESSION['logged']) || $_SESSION['logged'] != t
 } elseif ($page == 'login' && isset($_SESSION['logged']) && $_SESSION['logged'] != true) {
     header('Location: ' . $templates->getIndex());
     $reserSys->checkIfChannelsExists();
-} else {
+} elseif (isset($_SESSION['logged']) && $_SESSION['logged'] != true) {
     $reserSys->checkIfChannelsExists();
 }
 

@@ -214,7 +214,7 @@ class ReservationSystem
             // Either add their details (as here)
             // OR an existing customer_id
             // OR leave blank and TourCMS will create a blank customer
-            if ($value['postTotalNumberCustomers'] = $totalCustomers) {
+            if ($value['postTotalNumberCustomers'] == $totalCustomers) {
                 foreach ($value['postCustomersArray'] as $key => $customer) {
                     $customerNode = $customers->addChild('customer');
                     foreach ($customer as $key => $value) {
@@ -223,7 +223,7 @@ class ReservationSystem
                 }
             }
         }
-
+        error_log('Booking: ' . $booking->asXML());
         // Query the TourCMS API, creating the booking
         $result = $tourcmsAmbiguous->start_new_booking($booking, $channelId);
         $bkg = $result->booking;
