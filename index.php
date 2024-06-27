@@ -15,12 +15,12 @@ use onboarding\services\RedisService;
 session_start();
 $redis = new RedisService($REDIS_HOST, $REDIS_PORT, $REDIS_PASSWORD);
 $expirationTime = time() + 600;
-$genService = new GeneralService($redis, $expirationTime);
+$genService = new GeneralService($redis);
 
 
 if (isset($_POST['username']) && isset($_POST['password'])) {
     try {
-        $xml = $genService->getXMLForAgent($SCRIPT_LOGIN_AGENT, $_POST);
+        $xml = $genService->curlPostRequest($SCRIPT_LOGIN_AGENT, $_POST);
         if ($xml->error == 'OK') {
             $_SESSION['username'] = $_POST['username'];
             $_SESSION['logged'] = true;
@@ -30,10 +30,10 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
         $_SESSION['logged'] = false;
     }
 }
-
-if ($genService->checkApiKeyExists()) {
+if ($genService->getApiKeyAgent()) {
     $tourcms = new TourCMSextension($MARKETPLACE_ID, $genService->getApiKeyAgent(), 'simplexml', $TIMEOUT);
     $tourcms->set_base_url($BASE_URL);
+    
     $reserSys = new ReservationSystem($tourcms, $redis, $expirationTime);
 }
 
@@ -48,8 +48,10 @@ if (isset($_POST['logout'])) {
 
 if ($page != 'login' && (!isset($_SESSION['logged']) || $_SESSION['logged'] != true)) {
     header('Location: ' . $templates->getIndex() . '/login');
-} else if ($page == 'login' && isset($_SESSION['logged']) && $_SESSION['logged'] != true) {
+} elseif ($page == 'login' && isset($_SESSION['logged']) && $_SESSION['logged'] != true) {
     header('Location: ' . $templates->getIndex());
+    $reserSys->checkIfChannelsExists();
+} else {
     $reserSys->checkIfChannelsExists();
 }
 
