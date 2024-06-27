@@ -1,0 +1,145 @@
+{{> head}}
+
+<body>
+    {{> header}}
+    <main>
+        {{# content.bookingComponents }}
+        <article id="CustomersInfo" class="mt-5">
+            <div class="container">
+                    <h3>Components for Channel {{ channelId }}</h3>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Tour</th>
+                            <th scope="col">Components</th>
+                            <th scope="col">Number of Customers</th>
+                            <th scope="col">Delete</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{# dataPerChannel}}
+                        <tr>
+                            <td>{{postTourId}}</td>
+                            <td>{{postComponentKey}}</td>
+                            <td>{{postTotalNumberCustomers}}</td>
+                            <td>
+                                <form action="bookingManager" method="POST">
+                                    <input type="hidden" value="{{postChannelId}}" name="postChannelId">
+                                    <input type="hidden" value="{{postComponentKey}}" name="postComponentKey">
+                                    <button type="submit" class="btn btn-danger" name="postRemoveComponent">Remove</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {{/ dataPerChannel}}
+                    </tbody>
+                </table>
+                <form action="bookingManager" method="POST">
+                    <div class="col-md-6">
+                        <label for="chosenAgent_{{channelId}}">Agent</label>
+                        <input type="radio" name="postRequestBookingAs" id="chosenAgent_{{channelId}}" value="agent"><br>
+                        <label for="chosenOperator_{{channelId}}">Operator</label>
+                        <input type="radio" name="postRequestBookingAs" id="chosenOperator_{{channelId}}" value="operator" checked="true"><br>
+                        <label for="chosenOperatorAsAgent_{{channelId}}">Operator as agent</label>
+                        <input type="radio" name="postRequestBookingAs" id="chosenOperatorAsAgent_{{channelId}}" value="operatorAsAgent"><br><br>
+                    </div>
+                    <input type="hidden" value="{{channelId}}" name="postChannelId">
+                    <button type="submit" class="btn btn-primary" name="postRequesBooking">Request Booking</button>
+                </form>
+            </div>
+        </article>
+        {{/content.bookingComponents}}
+
+
+        {{#content.resquestedBooking}}
+        <div class="container d-flex justify-content-center align-items-center vh-50">
+            <div class="card p-4">
+                <div class="card-body text-center">
+                    <h2 class="card-title">Booking Requested</h2>
+                    <h3 class="card-subtitle mb-2 text-muted">Booking ID: {{resquestedBookingResponse.booking_id}}</h3>
+                    <h3 class="card-subtitle mb-4 text-muted">Booking Total: {{resquestedBookingResponse.sales_revenue}}
+                        {{resquestedBookingResponse.sale_currency}}</h3>
+                    <form action="bookingManager" method="POST">
+                        <input type="hidden" value="{{channel_id}}" name="postChannelId">
+                        <input type="hidden" name="postRequestBookingAs" value="{{requestBookingAs}}">
+                        <input type="hidden" name="postRequestedBooking"
+                            value="{{resquestedBookingResponse.booking_id}}">
+                        <input type="hidden" name="postCommitBooking">
+                        <button type="submit" class="btn btn-primary">Commit Booking</button>
+                    </form>
+                    <form action="bookingManager" method="POST"
+                    class="mt-3">
+                        <input type="hidden" value="{{channel_id}}" name="postChannelId">
+                        <input type="hidden" name="postRequestedBooking" value="{{resquestedBookingResponse.booking_id}}">
+                        <input type="hidden" name="postDeleteTemporalBooking">
+                        <button type="submit" class="btn btn-danger">Delete Booking</button>  
+                    </form>
+                </div>
+            </div>
+        </div>
+        {{/content.resquestedBooking}}
+
+        {{# content.bookingDone}}
+
+        <div class="container d-flex justify-content-center align-items-center vh-50">
+            <div class="card p-4">
+                <div class="card-body text-center">
+                    <h2 class="card-title">Booking Done</h2>
+                    <h3 class="card-subtitle mb-2 text-muted">Booking ID: {{content.bookingId}}</h3>
+                    <h3 class="card-subtitle mb-4 text-muted">Booking Channel: {{content.bookingChannel}}</h3>
+                    <h3 class="card-subtitle mt-1 text-muted">
+                        <a href="../index.php">Redirect to main page</a>
+                    </h3>
+                </div>
+            </div>
+        </div>
+        {{/ content.bookingDone}}
+
+        {{# content.bookingDeleted}}
+        <div class="container d-flex justify-content-center align-items-center vh-50">
+            <div class="card p-4">
+                <div class="card-body text-center">
+                    <h2 class="card-title
+                    text-danger">Booking Deleted</h2>
+                    <h3 class="card-subtitle mt-1 text-muted">
+                        <a href="../index.php" >Redirect to main page</a>
+                    </h3>
+                </div>
+            </div>
+        </div>
+        {{/ content.bookingDeleted}}
+
+        {{# content.bookingError}}
+        <div class="container d-flex justify-content-center align-items-center vh-50">
+            <div class="card p-4">
+                <div class="card-body text-center">
+                    <h2 class="card-title
+                    text-danger">Booking Error</h2>
+                    <h3 class="card-subtitle mt-1 text-muted">{{content.bookingErrorMessage}}</h3>
+                    <h3 class="card-subtitle mt-1 text-muted">
+                        <a href="../index.php" >Redirect to main page</a>
+                    </h3>
+                </div>
+            </div>
+        </div>
+        {{/ content.bookingError}}
+
+        {{# content.emptyCart}}
+        <div class="container d-flex justify-content-center align-items-center vh-50">
+            <div class="card p-4">
+                <div class="card-body text-center">
+                    <h2 class="card-title
+                    text-danger">Empty Cart</h2>
+                    <h3 class="card-subtitle mt-1 text-muted">
+                        <a href="../index.php" >Redirect to main page</a>
+                    </h3>
+                </div>
+            </div>
+        </div>
+        {{/ content.emptyCart}}
+
+    </main>
+    {{> scripts}}
+    {{> footer}}
+</body>
+
+</html>

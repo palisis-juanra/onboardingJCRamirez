@@ -52,11 +52,11 @@ class Templates
         return ($final);
     }
 
-    public function getData($page)
+    public function getData($page, $countComponents = 0)
     {
 
         $url = $this->getIndex();
-        $data['nav']['header'] = $this->nav->header($url);
+        $data['nav']['header'] = $this->nav->header($url, $countComponents);
         $data['nav']['footer'] = $this->nav->footer($url);
         switch ($page) {
             case 'channels':
@@ -100,6 +100,13 @@ class Templates
                 ];
                 break;
             case 'login':
+                $data['content'] = [
+                    'title' => 'Login',
+                    'heading' => 'Login',
+                    'body' => 'This is the login page'
+                ];
+                break;
+            case 'bookingManager':
                 $data['content'] = [
                     'title' => 'Login',
                     'heading' => 'Login',

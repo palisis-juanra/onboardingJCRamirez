@@ -58,18 +58,16 @@
                         <div class="card card-custom card-orange text-center p-3">
                             <h5 class="card-title"><i class="icon fas fa-receipt"></i>
                                 Transaction</h5>
-                            <p>Sale value: {{ sales_revenue_display
-                                }}</p>
-                            <p>Balance: {{ balance_display }} ({{
-                                balance_due }})</p>
+                            <p>Sale value: {{ sales_revenue_display}}</p>
+                            <p>Balance: {{ balance_display }} ({{balance_due }})</p>
                                 {{^ auxBooleanPaymentFulfilled}}
-                            <p>Owed by: {{# balance_owed_by }}Lead
-                                customer{{/ balance_owed_by }}{{^
-                                balance_owed_by }}Undefined{{/
-                                balance_owed_by }}</p>
-                            <button data-bs-toggle="modal" data-bs-target="#payment" class="btn btn-dark mt-3">Add
-                                Payment /
-                                Refund</button>
+                            <p>Owed by: {{# balance_owed_by }}
+                                Lead customer
+                                {{/ balance_owed_by }}
+                                {{^balance_owed_by}}
+                                Undefined
+                                {{/balance_owed_by }}</p>
+                            <button data-bs-toggle="modal" data-bs-target="#payment" class="btn btn-dark mt-3">AddPayment/Refund</button>
                             {{/ auxBooleanPaymentFulfilled}}
                             {{# auxBooleanPaymentFulfilled}}
                             <p>Payment status: {{ payment_status_text }}</p>
@@ -93,8 +91,7 @@
                                     <input type="hidden" name="postUpdateCancelation">
                                     <textarea name="postCancelationReason" rows="3"placeholder='Enter your reason'></textarea>
                                 </div>
-                                <button class="btn btn-danger mt-3" type="submit" name="postSearchBooking">Cancel
-                                    booking</button>
+                                <button class="btn btn-danger mt-3" type="submit" name="postSearchBooking">Cancel booking</button>
                             </form>
                             {{/cancel_reason}}
                         </div>
